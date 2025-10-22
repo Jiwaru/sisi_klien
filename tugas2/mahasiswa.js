@@ -1,7 +1,3 @@
-// =================================================================
-// BAGIAN 1: DATA AWAL (INPUT)
-// =================================================================
-
 const mataKuliahList = {
   tahunAjar: "2023/2024",
   mataKuliah: [
@@ -55,11 +51,6 @@ let mahasiswaList = {
   ],
 };
 
-// =================================================================
-// BAGIAN 2: DEFINISI FUNGSI
-// =================================================================
-
-// 2.1 Operasi Baca & Kueri
 const show = () => {
   const matkulMap = new Map(
     (mataKuliahList.mataKuliah || []).map((mk) => [mk.kode, mk.nama])
@@ -93,9 +84,7 @@ const jumlahAktifTidak = () => {
   return { aktif, tidakAktif };
 };
 
-// 2.2 Operasi Manipulasi Data (CRUD)
 const add = (mahasiswaBaru) => {
-  // Imutabel: buat array baru dengan mahasiswaBaru di akhir
   mahasiswaList.mahasiswa = [...mahasiswaList.mahasiswa, mahasiswaBaru];
 };
 
@@ -112,16 +101,13 @@ const deleteById = (nim) => {
 };
 
 const clear = () => {
-  // Mutabel
   mahasiswaList.mahasiswa.length = 0;
 };
 
 const clearArray = () => {
-  // Imutabel
   mahasiswaList.mahasiswa = [];
 };
 
-// 2.3 Perhitungan & Analisis
 const totalNilai = (nim) => {
   const mahasiswa = mahasiswaList.mahasiswa.find((m) => m.nim === nim);
   if (!mahasiswa) return "Mahasiswa tidak ditemukan";
@@ -175,7 +161,6 @@ const IPS = (nim) => {
   return (totalPoinTertimbang / totalSks).toFixed(2);
 };
 
-// 2.4 Operasi Pengurutan
 const sortByNIM = () => {
   const sortedMahasiswa = [...mahasiswaList.mahasiswa].sort((a, b) =>
     a.nim.localeCompare(b.nim)
@@ -184,16 +169,11 @@ const sortByNIM = () => {
 };
 
 const sortByStatus = () => {
-  // true (1) duluan => descending by numeric value of status
   const sortedMahasiswa = [...mahasiswaList.mahasiswa].sort(
     (a, b) => Number(b.status) - Number(a.status)
   );
   mahasiswaList.mahasiswa = sortedMahasiswa;
 };
-
-// =================================================================
-// BAGIAN 3: EKSEKUSI FUNGSI DAN OUTPUT
-// =================================================================
 
 console.log("====== TAHAP 1: DATA AWAL ======");
 show();
@@ -234,6 +214,6 @@ sortByNIM();
 show();
 
 console.log("\n====== TAHAP 7: MENGHAPUS SEMUA DATA ======");
-clearArray(); // Menggunakan versi imutabel
+clearArray();
 console.log("Jumlah Mahasiswa Setelah clearArray():", jumlahMahasiswa());
-show(); // Seharusnya tidak menampilkan apa-apa
+show();
