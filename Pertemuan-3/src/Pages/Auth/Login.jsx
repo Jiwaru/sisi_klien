@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Input from "@/Pages/Layouts/Components/Input";
 import Label from "@/Pages/Layouts/Components/Label";
 import Button from "@/Pages/Layouts/Components/Button";
@@ -6,18 +7,22 @@ import Link from "@/Pages/Layouts/Components/Link";
 import Card from "@/Pages/Layouts/Components/Card";
 import Heading from "@/Pages/Layouts/Components/Heading";
 import Form from "@/Pages/Layouts/Components/Form";
-
 import { dummyUser } from "@/Data/Dummy";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const [form, setForm] = useState({ email: "", password: "" });
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    const email = e.target.email.value;
-    const password = e.target.password.value;
-
+    const { email, password } = form;
     if (email === dummyUser.email && password === dummyUser.password) {
       localStorage.setItem("user", JSON.stringify(dummyUser));
-      window.location.href = "/admin";
+      navigate("/admin");
     } else {
       alert("Email atau password salah!");
     }
@@ -32,6 +37,8 @@ const Login = () => {
           <Input
             type="email"
             name="email"
+            value={form.email}
+            onChange={handleChange}
             placeholder="Masukkan email"
             required
           />
@@ -41,6 +48,8 @@ const Login = () => {
           <Input
             type="password"
             name="password"
+            value={form.password}
+            onChange={handleChange}
             placeholder="Masukkan password"
             required
           />

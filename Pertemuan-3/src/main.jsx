@@ -14,8 +14,8 @@ import ProtectedRoute from "@/Pages/Layouts/Components/ProtectedRoute";
 
 import Login from "@/Pages/Auth/Login";
 import Dashboard from "@/Pages/Admin/Dashboard";
-import Mahasiswa from "@/Pages/Admin/Mahasiswa";
-import MahasiswaDetail from "@/Pages/Admin/MahasiswaDetail";
+import Mahasiswa from "@/Pages/Admin//Mahasiswa/Mahasiswa";
+import MahasiswaDetail from "@/Pages/Admin/Mahasiswa/MahasiswaDetail";
 import PageNotFound from "@/Pages/PageNotFound";
 
 const router = createBrowserRouter([

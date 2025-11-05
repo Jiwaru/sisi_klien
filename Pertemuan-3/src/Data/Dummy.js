@@ -10,13 +10,16 @@ export const mahasiswaList = [
   {
     nim: "20211001",
     nama: "Budi Santoso",
+    prodi: "Teknik Informatika",
   },
   {
     nim: "20211002",
     nama: "Siti Aminah",
+    prodi: "Sistem Informasi",
   },
   {
     nim: "20211003",
     nama: "Ahmad Fauzi",
+    prodi: "Desain Komunikasi Visual",
   },
 ];
