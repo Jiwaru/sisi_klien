@@ -7,6 +7,7 @@ import Link from "@/Pages/Layouts/Components/Link";
 import Card from "@/Pages/Layouts/Components/Card";
 import Heading from "@/Pages/Layouts/Components/Heading";
 import Form from "@/Pages/Layouts/Components/Form";
+import { toastSuccess, toastError } from "@/Utils/Helpers/ToastHelpers";
 import { dummyUser } from "@/Data/Dummy";
 
 const Login = () => {
@@ -22,9 +23,10 @@ const Login = () => {
     const { email, password } = form;
     if (email === dummyUser.email && password === dummyUser.password) {
       localStorage.setItem("user", JSON.stringify(dummyUser));
-      navigate("/admin");
+      toastSuccess("Login berhasil!");
+      navigate("/admin/dashboard"); // atau "/admin" sesuai routing
     } else {
-      alert("Email atau password salah!");
+      toastError("Email atau password salah!");
     }
   };
 
