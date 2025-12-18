@@ -1,105 +1,95 @@
-import React, { useState } from "react";
-
+import React, { useState, useEffect } from "react";
 import Card from "@/Pages/Auth/Components/Card";
 import Heading from "@/Pages/Auth/Components/Heading";
 import Button from "@/Pages/Auth/Components/Button";
-import Modal from "@/Pages/Auth/Components/Modal";
-import Form from "@/Pages/Auth/Components/Form";
-import Label from "@/Pages/Auth/Components/Label";
-import Input from "@/Pages/Auth/Components/Input";
 import { mahasiswaList } from "@/Data/Dummy";
-import { Link } from "react-router-dom";
+
+import MahasiswaTable from "./MahasiswaTable";
+import MahasiswaModal from "./MahasiswaModal";
 
 const Mahasiswa = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [mahasiswa, setMahasiswa] = useState([]);
+  const [selectedMahasiswa, setSelectedMahasiswa] = useState(null);
+  const [isModalOpen, setModalOpen] = useState(false);
 
-  const handleEdit = (nama) => alert(`Edit data ${nama}`);
-  const handleDelete = (nama) => {
-    if (confirm(`Yakin ingin hapus ${nama}?`)) alert("Data berhasil dihapus!");
+  useEffect(() => {
+    setMahasiswa(mahasiswaList.map((m) => ({ ...m, status: "Aktif" })));
+  }, []);
+
+  const storeMahasiswa = (payload) => {
+    const isExist = mahasiswa.some((m) => m.nim === payload.nim);
+    if (isExist) {
+      alert("NIM sudah terdaftar!");
+      return;
+    }
+    setMahasiswa([...mahasiswa, payload]);
+    alert("Berhasil menambahkan data!");
+  };
+
+  const updateMahasiswa = (payload) => {
+    const updatedData = mahasiswa.map((item) =>
+      item.nim === payload.nim ? payload : item
+    );
+    setMahasiswa(updatedData);
+    alert("Berhasil memperbarui data!");
+  };
+
+  const deleteMahasiswa = (nim) => {
+    const filteredData = mahasiswa.filter((item) => item.nim !== nim);
+    setMahasiswa(filteredData);
+    alert("Data berhasil dihapus!");
+  };
+
+  const openAddModal = () => {
+    setSelectedMahasiswa(null);
+    setModalOpen(true);
+  };
+
+  const openEditModal = (mhs) => {
+    setSelectedMahasiswa(mhs);
+    setModalOpen(true);
+  };
+
+  const handleDelete = (nim) => {
+    if (confirm(`Yakin ingin menghapus NIM ${nim}?`)) {
+      deleteMahasiswa(nim);
+    }
+  };
+
+  const handleSubmit = (formData) => {
+    if (selectedMahasiswa) {
+      updateMahasiswa(formData);
+    } else {
+      storeMahasiswa(formData);
+    }
   };
 
   return (
-    <Card>
-      <div className="flex justify-between items-center mb-4">
-        <Heading as="h2" className="mb-0 text-left">
-          Daftar Mahasiswa
-        </Heading>
-        <Button onClick={() => setIsModalOpen(true)}>+ Tambah Mahasiswa</Button>
-      </div>
+    <>
+      {}
+      <MahasiswaModal
+        isModalOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmit={handleSubmit}
+        selectedMahasiswa={selectedMahasiswa}
+      />
 
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="Tambah Mahasiswa"
-      >
-        <Form
-          onSubmit={(e) => {
-            e.preventDefault();
-            alert("Data tersimpan!");
-            setIsModalOpen(false);
-          }}
-        >
-          <div>
-            <Label htmlFor="nim">NIM</Label>
-            <Input type="text" name="nim" placeholder="Masukkan NIM" required />
-          </div>
-          <div>
-            <Label htmlFor="nama">Nama Lengkap</Label>
-            <Input
-              type="text"
-              name="nama"
-              placeholder="Masukkan Nama"
-              required
-            />
-          </div>
-          <Button type="submit" className="w-full mt-4">
-            Simpan Data
-          </Button>
-        </Form>
-      </Modal>
+      <Card>
+        <div className="flex justify-between items-center mb-4">
+          <Heading as="h2" className="mb-0 text-left">
+            Daftar Mahasiswa
+          </Heading>
+          <Button onClick={openAddModal}>+ Tambah Mahasiswa</Button>
+        </div>
 
-      <table className="w-full text-sm text-gray-700">
-        <thead className="bg-blue-600 text-white">
-          <tr>
-            <th className="py-2 px-4 text-left">NIM</th>
-            <th className="py-2 px-4 text-left">Nama</th>
-            <th className="py-2 px-4 text-center">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          {}
-          {mahasiswaList.map((mhs, index) => (
-            <tr key={mhs.nim} className="odd:bg-white even:bg-gray-100">
-              <td className="py-2 px-4">{mhs.nim}</td>
-              <td className="py-2 px-4">{mhs.nama}</td>
-              <td className="py-2 px-4 text-center space-x-2">
-                {}
-                <Link
-                  to={`/admin/mahasiswa/${mhs.nim}`}
-                  className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition"
-                >
-                  Detail
-                </Link>
-                <Button
-                  size="sm"
-                  variant="warning"
-                  onClick={() => handleEdit(mhs.nama)}
-                >
-                  Edit
-                </Button>
-                <Button
-                  size="sm"
-                  variant="danger"
-                  onClick={() => handleDelete(mhs.nama)}
-                >
-                  Hapus
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </Card>
+        {}
+        <MahasiswaTable
+          mahasiswa={mahasiswa}
+          openEditModal={openEditModal}
+          onDelete={handleDelete}
+        />
+      </Card>
+    </>
   );
 };
 
