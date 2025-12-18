@@ -1,4 +1,4 @@
-import Button from "@/Pages/Auth/Components/Button";
+import Button from "@/Pages/Auth/Components/Button"; // Sesuaikan path jika Button ada di Auth
 
 const Header = () => {
   const toggleProfileMenu = () => {
@@ -26,7 +26,12 @@ const Header = () => {
               Profile
             </a>
             <button
-              onClick={() => alert("Logout berhasil!")}
+              onClick={() => {
+                // Hapus sesi login
+                localStorage.removeItem("user");
+                // Redirect ke halaman login
+                window.location.href = "/";
+              }}
               className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
             >
               Logout

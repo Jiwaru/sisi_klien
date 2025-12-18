@@ -1,15 +1,16 @@
-import React, { useState } from "react"; // Import useState
-import AdminLayout from "@/Pages/Admin/AdminLayout";
+import React, { useState } from "react";
+
 import Card from "@/Pages/Auth/Components/Card";
 import Heading from "@/Pages/Auth/Components/Heading";
 import Button from "@/Pages/Auth/Components/Button";
-import Modal from "@/Pages/Auth/Components/Modal"; // Import Modal
+import Modal from "@/Pages/Auth/Components/Modal";
 import Form from "@/Pages/Auth/Components/Form";
 import Label from "@/Pages/Auth/Components/Label";
 import Input from "@/Pages/Auth/Components/Input";
+import { mahasiswaList } from "@/Data/Dummy";
+import { Link } from "react-router-dom";
 
 const Mahasiswa = () => {
-  // State untuk mengontrol visibilitas Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleEdit = (nama) => alert(`Edit data ${nama}`);
@@ -18,8 +19,14 @@ const Mahasiswa = () => {
   };
 
   return (
-    <AdminLayout>
-      {/* Komponen Modal dipasang di sini */}
+    <Card>
+      <div className="flex justify-between items-center mb-4">
+        <Heading as="h2" className="mb-0 text-left">
+          Daftar Mahasiswa
+        </Heading>
+        <Button onClick={() => setIsModalOpen(true)}>+ Tambah Mahasiswa</Button>
+      </div>
+
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -51,70 +58,48 @@ const Mahasiswa = () => {
         </Form>
       </Modal>
 
-      <Card>
-        <div className="flex justify-between items-center mb-4">
-          <Heading as="h2" className="mb-0 text-left">
-            Daftar Mahasiswa
-          </Heading>
-          {/* Update onClick untuk membuka Modal */}
-          <Button onClick={() => setIsModalOpen(true)}>
-            + Tambah Mahasiswa
-          </Button>
-        </div>
-
-        <table className="w-full text-sm text-gray-700">
-          <thead className="bg-blue-600 text-white">
-            <tr>
-              <th className="py-2 px-4 text-left">NIM</th>
-              <th className="py-2 px-4 text-left">Nama</th>
-              <th className="py-2 px-4 text-center">Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="odd:bg-white even:bg-gray-100">
-              <td className="py-2 px-4">20211001</td>
-              <td className="py-2 px-4">Budi Santoso</td>
+      <table className="w-full text-sm text-gray-700">
+        <thead className="bg-blue-600 text-white">
+          <tr>
+            <th className="py-2 px-4 text-left">NIM</th>
+            <th className="py-2 px-4 text-left">Nama</th>
+            <th className="py-2 px-4 text-center">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {}
+          {mahasiswaList.map((mhs, index) => (
+            <tr key={mhs.nim} className="odd:bg-white even:bg-gray-100">
+              <td className="py-2 px-4">{mhs.nim}</td>
+              <td className="py-2 px-4">{mhs.nama}</td>
               <td className="py-2 px-4 text-center space-x-2">
+                {}
+                <Link
+                  to={`/admin/mahasiswa/${mhs.nim}`}
+                  className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition"
+                >
+                  Detail
+                </Link>
                 <Button
                   size="sm"
                   variant="warning"
-                  onClick={() => handleEdit("Budi Santoso")}
+                  onClick={() => handleEdit(mhs.nama)}
                 >
                   Edit
                 </Button>
                 <Button
                   size="sm"
                   variant="danger"
-                  onClick={() => handleDelete("Budi Santoso")}
+                  onClick={() => handleDelete(mhs.nama)}
                 >
                   Hapus
                 </Button>
               </td>
             </tr>
-            <tr className="odd:bg-white even:bg-gray-100">
-              <td className="py-2 px-4">20211002</td>
-              <td className="py-2 px-4">Siti Aminah</td>
-              <td className="py-2 px-4 text-center space-x-2">
-                <Button
-                  size="sm"
-                  variant="warning"
-                  onClick={() => handleEdit("Siti Aminah")}
-                >
-                  Edit
-                </Button>
-                <Button
-                  size="sm"
-                  variant="danger"
-                  onClick={() => handleDelete("Siti Aminah")}
-                >
-                  Hapus
-                </Button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </Card>
-    </AdminLayout>
+          ))}
+        </tbody>
+      </table>
+    </Card>
   );
 };
 
