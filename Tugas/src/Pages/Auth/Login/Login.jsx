@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Input from "@/Pages/Auth/Components/Input";
 import Label from "@/Pages/Auth/Components/Label";
 import Button from "@/Pages/Auth/Components/Button";
@@ -8,32 +9,45 @@ import Heading from "@/Pages/Auth/Components/Heading";
 import Form from "@/Pages/Auth/Components/Form";
 
 import { dummyUser } from "@/Data/Dummy";
+import { toastSuccess, toastError } from "@/Utils/Helpers/ToastHelpers";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    const email = e.target.email.value;
-    const password = e.target.password.value;
+    const { email, password } = form;
 
     if (email === dummyUser.email && password === dummyUser.password) {
       localStorage.setItem("user", JSON.stringify(dummyUser));
-
-      window.location.href = "/admin";
+      toastSuccess("Login berhasil! Selamat datang.");
+      navigate("/admin/dashboard");
     } else {
-      alert("Email atau password salah!");
+      toastError("Email atau password salah!");
     }
   };
 
+  // PERBAIKAN: Hapus <div> pembungkus luar, langsung return <Card>
+  // AuthLayout sudah menangani centering dan background.
   return (
-    <Card className="max-w-md">
+    <Card className="max-w-md w-full">
       <Heading as="h2">Login</Heading>
-      {}
       <Form onSubmit={handleSubmit}>
         <div>
           <Label htmlFor="email">Email</Label>
           <Input
             type="email"
             name="email"
+            value={form.email}
+            onChange={handleChange}
             placeholder="Masukkan email"
             required
           />
@@ -43,6 +57,8 @@ const Login = () => {
           <Input
             type="password"
             name="password"
+            value={form.password}
+            onChange={handleChange}
             placeholder="Masukkan password"
             required
           />

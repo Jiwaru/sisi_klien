@@ -1,9 +1,19 @@
-import Button from "@/Pages/Auth/Components/Button"; // Sesuaikan path jika Button ada di Auth
+import Button from "@/Pages/Auth/Components/Button";
+// Import Helper Swal
+import { confirmLogout } from "@/Utils/Helpers/SwalHelpers";
 
 const Header = () => {
   const toggleProfileMenu = () => {
     const menu = document.getElementById("profileMenu");
     if (menu) menu.classList.toggle("hidden");
+  };
+
+  // Fungsi Logout Baru
+  const handleLogout = () => {
+    confirmLogout(() => {
+      localStorage.removeItem("user");
+      window.location.href = "/";
+    });
   };
 
   return (
@@ -25,13 +35,9 @@ const Header = () => {
             >
               Profile
             </a>
+            {/* Update tombol logout */}
             <button
-              onClick={() => {
-                // Hapus sesi login
-                localStorage.removeItem("user");
-                // Redirect ke halaman login
-                window.location.href = "/";
-              }}
+              onClick={handleLogout}
               className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
             >
               Logout

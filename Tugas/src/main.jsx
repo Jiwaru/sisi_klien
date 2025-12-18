@@ -5,15 +5,14 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
 import "./App.css";
 
-// Layouts
 import AuthLayout from "@/Pages/Auth/AuthLayout";
 import AdminLayout from "@/Pages/Admin/AdminLayout";
 import ProtectedRoute from "@/Pages/Admin/Components/ProtectedRoute";
 
-// Pages
 import Login from "@/Pages/Auth/Login/Login";
 import Dashboard from "@/Pages/Admin/Dashboard/Dashboard";
 import Mahasiswa from "@/Pages/Admin/Mahasiswa/Mahasiswa";
@@ -41,7 +40,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Navigate to="dashboard" />, // Redirect otomatis ke dashboard
+        element: <Navigate to="dashboard" />,
       },
       {
         path: "dashboard",
@@ -55,7 +54,7 @@ const router = createBrowserRouter([
             element: <Mahasiswa />,
           },
           {
-            path: ":nim", // Parameter URL
+            path: ":nim",
             element: <MahasiswaDetail />,
           },
         ],
@@ -70,6 +69,7 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
+    <Toaster position="top-right" reverseOrder={false} />
     <RouterProvider router={router} />
   </React.StrictMode>
 );

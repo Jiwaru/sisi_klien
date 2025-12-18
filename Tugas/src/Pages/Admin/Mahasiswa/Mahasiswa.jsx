@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
+
 import Card from "@/Pages/Auth/Components/Card";
 import Heading from "@/Pages/Auth/Components/Heading";
 import Button from "@/Pages/Auth/Components/Button";
-import { mahasiswaList } from "@/Data/Dummy";
 
 import MahasiswaTable from "./MahasiswaTable";
 import MahasiswaModal from "./MahasiswaModal";
+
+import { mahasiswaList } from "@/Data/Dummy";
+
+import { confirmDelete, confirmUpdate } from "@/Utils/Helpers/SwalHelpers";
+import { toastSuccess, toastError } from "@/Utils/Helpers/ToastHelpers";
 
 const Mahasiswa = () => {
   const [mahasiswa, setMahasiswa] = useState([]);
@@ -19,11 +24,12 @@ const Mahasiswa = () => {
   const storeMahasiswa = (payload) => {
     const isExist = mahasiswa.some((m) => m.nim === payload.nim);
     if (isExist) {
-      alert("NIM sudah terdaftar!");
+      toastError("NIM sudah terdaftar!");
       return;
     }
     setMahasiswa([...mahasiswa, payload]);
-    alert("Berhasil menambahkan data!");
+    toastSuccess("Berhasil menambahkan data!");
+    setModalOpen(false);
   };
 
   const updateMahasiswa = (payload) => {
@@ -31,13 +37,13 @@ const Mahasiswa = () => {
       item.nim === payload.nim ? payload : item
     );
     setMahasiswa(updatedData);
-    alert("Berhasil memperbarui data!");
+    toastSuccess("Data berhasil diperbarui!");
+    setModalOpen(false);
   };
 
   const deleteMahasiswa = (nim) => {
     const filteredData = mahasiswa.filter((item) => item.nim !== nim);
     setMahasiswa(filteredData);
-    alert("Data berhasil dihapus!");
   };
 
   const openAddModal = () => {
@@ -51,14 +57,16 @@ const Mahasiswa = () => {
   };
 
   const handleDelete = (nim) => {
-    if (confirm(`Yakin ingin menghapus NIM ${nim}?`)) {
+    confirmDelete(() => {
       deleteMahasiswa(nim);
-    }
+    });
   };
 
   const handleSubmit = (formData) => {
     if (selectedMahasiswa) {
-      updateMahasiswa(formData);
+      confirmUpdate(() => {
+        updateMahasiswa(formData);
+      });
     } else {
       storeMahasiswa(formData);
     }
@@ -74,6 +82,7 @@ const Mahasiswa = () => {
         selectedMahasiswa={selectedMahasiswa}
       />
 
+      {}
       <Card>
         <div className="flex justify-between items-center mb-4">
           <Heading as="h2" className="mb-0 text-left">
