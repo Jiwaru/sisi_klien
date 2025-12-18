@@ -1,5 +1,6 @@
 import React from "react";
 import Button from "@/Pages/Auth/Components/Button";
+import { Link } from "react-router-dom";
 
 const MahasiswaTable = ({ mahasiswa, openEditModal, onDelete }) => {
   return (
@@ -22,8 +23,9 @@ const MahasiswaTable = ({ mahasiswa, openEditModal, onDelete }) => {
             </tr>
           ) : (
             mahasiswa.map((mhs) => (
+              // Gunakan ID sebagai key jika ada, fallback ke nim
               <tr
-                key={mhs.nim}
+                key={mhs.id || mhs.nim}
                 className="odd:bg-white even:bg-gray-100 hover:bg-gray-50"
               >
                 <td className="py-2 px-4 font-medium">{mhs.nim}</td>
@@ -34,6 +36,12 @@ const MahasiswaTable = ({ mahasiswa, openEditModal, onDelete }) => {
                   </span>
                 </td>
                 <td className="py-2 px-4 text-center flex justify-center gap-2">
+                  <Link
+                    to={`/admin/mahasiswa/${mhs.id}`} // Ubah ke ID agar sesuai API getById
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition flex items-center"
+                  >
+                    Detail
+                  </Link>
                   <Button
                     size="sm"
                     variant="warning"
@@ -44,7 +52,8 @@ const MahasiswaTable = ({ mahasiswa, openEditModal, onDelete }) => {
                   <Button
                     size="sm"
                     variant="danger"
-                    onClick={() => onDelete(mhs.nim)}
+                    // PENTING: Gunakan ID untuk menghapus ke API json-server
+                    onClick={() => onDelete(mhs.id)}
                   >
                     Hapus
                   </Button>

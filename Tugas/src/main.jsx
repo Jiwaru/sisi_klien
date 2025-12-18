@@ -9,14 +9,19 @@ import { Toaster } from "react-hot-toast";
 
 import "./App.css";
 
+// Layouts
 import AuthLayout from "@/Pages/Auth/AuthLayout";
 import AdminLayout from "@/Pages/Admin/AdminLayout";
 import ProtectedRoute from "@/Pages/Admin/Components/ProtectedRoute";
 
+// Pages
 import Login from "@/Pages/Auth/Login/Login";
+import Register from "@/Pages/Auth/Register/Register";
 import Dashboard from "@/Pages/Admin/Dashboard/Dashboard";
 import Mahasiswa from "@/Pages/Admin/Mahasiswa/Mahasiswa";
 import MahasiswaDetail from "@/Pages/Admin/MahasiswaDetail/MahasiswaDetail";
+import Dosen from "@/Pages/Admin/Dosen/Dosen";
+import MataKuliah from "@/Pages/Admin/MataKuliah/MataKuliah"; // 👈 IMPORT INI
 import PageNotFound from "@/Pages/Error/PageNotFound";
 
 const router = createBrowserRouter([
@@ -27,6 +32,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Login />,
+      },
+      {
+        path: "register",
+        element: <Register />,
       },
     ],
   },
@@ -58,6 +67,15 @@ const router = createBrowserRouter([
             element: <MahasiswaDetail />,
           },
         ],
+      },
+      {
+        path: "dosen",
+        element: <Dosen />,
+      },
+      // 👇 ROUTE BARU MATA KULIAH
+      {
+        path: "matakuliah",
+        element: <MataKuliah />,
       },
     ],
   },

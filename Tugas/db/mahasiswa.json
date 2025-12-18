@@ -1,0 +1,32 @@
+[
+  {
+    "id": "1",
+    "nim": "A11.2022.14001",
+    "nama": "Budi Santoso",
+    "status": "Aktif"
+  },
+  {
+    "id": "2",
+    "nim": "A11.2022.14002",
+    "nama": "Siti Aminah",
+    "status": "Cuti"
+  },
+  {
+    "id": "3",
+    "nim": "A11.2022.14003",
+    "nama": "Rizky Pratama",
+    "status": "Lulus"
+  },
+  {
+    "id": "4",
+    "nim": "A11.2022.14004",
+    "nama": "Dewi Lestari",
+    "status": "Aktif"
+  },
+  {
+    "id": "5",
+    "nim": "A11.2022.14005",
+    "nama": "Andi Saputra",
+    "status": "Aktif"
+  }
+]

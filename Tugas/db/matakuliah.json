@@ -1,0 +1,4 @@
+[
+  { "id": "1", "kode": "MK001", "nama": "Pemrograman Web", "sks": 3 },
+  { "id": "2", "kode": "MK002", "nama": "Basis Data", "sks": 4 }
+]
