@@ -9,10 +9,8 @@ export const login = async (email, password) => {
 };
 
 export const register = async (data) => {
-  // Cek apakah email sudah ada
   const res = await axios.get("/user", { params: { email: data.email } });
   if (res.data.length > 0) throw new Error("Email sudah terdaftar");
 
-  // Simpan user baru
   return axios.post("/user", data);
 };

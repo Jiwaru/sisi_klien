@@ -1,23 +1,21 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Input from "@/Pages/Auth/Components/Input";
-import Label from "@/Pages/Auth/Components/Label";
-import Button from "@/Pages/Auth/Components/Button";
-import Link from "@/Pages/Auth/Components/Link";
+import { useNavigate, Link } from "react-router-dom";
+import { login } from "@/Utils/Apis/AuthApi";
+import { toastSuccess, toastError } from "@/Utils/Helpers/ToastHelpers";
+import { useAuthStateContext } from "@/Utils/Contexts/AuthContext"; // Import Context
+
+// Komponen UI
 import Card from "@/Pages/Auth/Components/Card";
 import Heading from "@/Pages/Auth/Components/Heading";
 import Form from "@/Pages/Auth/Components/Form";
-
-import { dummyUser } from "@/Data/Dummy";
-import { toastSuccess, toastError } from "@/Utils/Helpers/ToastHelpers";
-import { login } from "@/Utils/Apis/AuthApi";
+import Input from "@/Pages/Auth/Components/Input";
+import Button from "@/Pages/Auth/Components/Button";
+import Label from "@/Pages/Auth/Components/Label";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
+  const { setUser } = useAuthStateContext(); // Ambil fungsi setUser
+  const [form, setForm] = useState({ email: "", password: "" });
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -26,17 +24,20 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const user = await login(form.email, form.password); // Panggil API
-      localStorage.setItem("user", JSON.stringify(user));
-      toastSuccess("Login berhasil");
-      navigate("/admin/dashboard");
+      const user = await login(form.email, form.password);
+
+      setUser(user); // 👈 Simpan user ke Context
+      toastSuccess("Login berhasil! Selamat datang.");
+
+      // Delay sedikit agar state terupdate
+      setTimeout(() => {
+        navigate("/admin/dashboard");
+      }, 100);
     } catch (err) {
       toastError(err.message);
     }
   };
 
-  // PERBAIKAN: Hapus <div> pembungkus luar, langsung return <Card>
-  // AuthLayout sudah menangani centering dan background.
   return (
     <Card className="max-w-md w-full">
       <Heading as="h2">Login</Heading>
@@ -46,7 +47,6 @@ const Login = () => {
           <Input
             type="email"
             name="email"
-            value={form.email}
             onChange={handleChange}
             placeholder="Masukkan email"
             required
@@ -57,27 +57,17 @@ const Login = () => {
           <Input
             type="password"
             name="password"
-            value={form.password}
             onChange={handleChange}
             placeholder="Masukkan password"
             required
           />
-        </div>
-        <div className="flex justify-between items-center">
-          <label className="flex items-center">
-            <input type="checkbox" className="mr-2" />
-            <span className="text-sm text-gray-600">Ingat saya</span>
-          </label>
-          <Link href="#" className="text-sm">
-            Lupa password?
-          </Link>
         </div>
         <Button type="submit" className="w-full">
           Login
         </Button>
       </Form>
       <p className="text-sm text-center text-gray-600 mt-4">
-        Belum punya akun? <Link href="#">Daftar</Link>
+        Belum punya akun? <Link to="/register">Daftar</Link>
       </p>
     </Card>
   );

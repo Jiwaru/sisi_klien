@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from "react";
 
-// Komponen UI
 import Card from "@/Pages/Auth/Components/Card";
 import Heading from "@/Pages/Auth/Components/Heading";
 import Button from "@/Pages/Auth/Components/Button";
 
-// Child Components
 import DosenTable from "./DosenTable";
 import DosenModal from "./DosenModal";
 
-// API & Helpers
 import {
   getDosen,
   storeDosen,
@@ -20,13 +17,11 @@ import { confirmDelete, confirmUpdate } from "@/Utils/Helpers/SwalHelpers";
 import { toastSuccess, toastError } from "@/Utils/Helpers/ToastHelpers";
 
 const Dosen = () => {
-  // --- STATE ---
   const [dosen, setDosen] = useState([]);
   const [selectedDosen, setSelectedDosen] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // --- FETCH DATA (READ) ---
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -43,8 +38,6 @@ const Dosen = () => {
     fetchData();
   }, []);
 
-  // --- HANDLERS ---
-
   const openAddModal = () => {
     setSelectedDosen(null);
     setModalOpen(true);
@@ -55,20 +48,16 @@ const Dosen = () => {
     setModalOpen(true);
   };
 
-  // Logic Simpan (Create / Update)
   const handleSubmit = async (formData) => {
     try {
       if (selectedDosen) {
-        // Mode Update
         confirmUpdate(async () => {
           await updateDosen(selectedDosen.id, formData);
           toastSuccess("Data dosen berhasil diperbarui!");
           setModalOpen(false);
-          fetchData(); // Refresh tabel
+          fetchData();
         });
       } else {
-        // Mode Create
-        // Cek duplikasi NIDN di sisi frontend (opsional jika backend belum handle)
         const isExist = dosen.some((d) => d.nidn === formData.nidn);
         if (isExist) {
           toastError("NIDN sudah terdaftar!");
@@ -78,7 +67,7 @@ const Dosen = () => {
         await storeDosen(formData);
         toastSuccess("Data dosen berhasil ditambahkan!");
         setModalOpen(false);
-        fetchData(); // Refresh tabel
+        fetchData();
       }
     } catch (error) {
       toastError("Terjadi kesalahan saat menyimpan data.");
@@ -86,13 +75,12 @@ const Dosen = () => {
     }
   };
 
-  // Logic Hapus (Delete)
   const handleDelete = (id) => {
     confirmDelete(async () => {
       try {
         await deleteDosen(id);
         toastSuccess("Data dosen berhasil dihapus!");
-        fetchData(); // Refresh tabel
+        fetchData();
       } catch (error) {
         toastError("Gagal menghapus data.");
       }

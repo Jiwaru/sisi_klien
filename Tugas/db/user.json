@@ -1,1 +1,27 @@
-[{ "id": "1", "email": "admin@mail.com", "password": "123", "nama": "Admin" }]
+[
+  {
+    "id": "1",
+    "name": "Super Admin",
+    "email": "admin@mail.com",
+    "password": "123",
+    "role": "admin",
+    "permission": [
+      "dashboard.page",
+      "mahasiswa.page",
+      "mahasiswa.create",
+      "mahasiswa.read",
+      "mahasiswa.update",
+      "mahasiswa.delete",
+      "dosen.page",
+      "matakuliah.page"
+    ]
+  },
+  {
+    "id": "2",
+    "name": "Staff Akademik",
+    "email": "staff@mail.com",
+    "password": "123",
+    "role": "staff",
+    "permission": ["dashboard.page", "mahasiswa.page", "mahasiswa.read"]
+  }
+]
