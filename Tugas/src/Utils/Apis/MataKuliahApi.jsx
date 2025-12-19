@@ -1,7 +1,8 @@
 import AxiosInstance from "@/Utils/AxiosInstance";
 
-export const getMataKuliah = () => AxiosInstance.get("/matakuliah");
-export const getMataKuliahById = (id) => AxiosInstance.get(`/matakuliah/${id}`);
+export const getMataKuliah = (params) =>
+  AxiosInstance.get("/matakuliah", { params });
+
 export const storeMataKuliah = (data) =>
   AxiosInstance.post("/matakuliah", data);
 export const updateMataKuliah = (id, data) =>

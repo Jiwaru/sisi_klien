@@ -1,4 +1,122 @@
 [
-  { "id": "1", "nidn": "060101", "nama": "Dr. Budi", "keahlian": "AI" },
-  { "id": "2", "nidn": "060102", "nama": "Siti M.Kom", "keahlian": "Web" }
+  {
+    "id": "1",
+    "nidn": "0601018001",
+    "nama": "Dr. Budi Darmawan, M.Kom",
+    "bidang": "Rekayasa Perangkat Lunak"
+  },
+  {
+    "id": "2",
+    "nidn": "0601018002",
+    "nama": "Prof. Siti Rahmawati, Ph.D",
+    "bidang": "Kecerdasan Buatan"
+  },
+  {
+    "id": "3",
+    "nidn": "0601018003",
+    "nama": "Ir. Joko Susilo, M.T",
+    "bidang": "Jaringan Komputer"
+  },
+  {
+    "id": "4",
+    "nidn": "0601018004",
+    "nama": "Ratna Dewi, S.Kom, M.Cs",
+    "bidang": "Sistem Informasi"
+  },
+  {
+    "id": "5",
+    "nidn": "0601018005",
+    "nama": "Heryanto, M.Kom",
+    "bidang": "Pemrograman Mobile"
+  },
+  {
+    "id": "6",
+    "nidn": "0601018006",
+    "nama": "Dr. Agus Setiawan",
+    "bidang": "Data Science"
+  },
+  {
+    "id": "7",
+    "nidn": "0601018007",
+    "nama": "Lina Marlina, M.T",
+    "bidang": "Internet of Things"
+  },
+  {
+    "id": "8",
+    "nidn": "0601018008",
+    "nama": "Fajar Sidik, M.Kom",
+    "bidang": "Game Development"
+  },
+  {
+    "id": "9",
+    "nidn": "0601018009",
+    "nama": "Sari Indah, M.Si",
+    "bidang": "Matematika Komputasi"
+  },
+  {
+    "id": "10",
+    "nidn": "0601018010",
+    "nama": "Bambang Trihatmojo, Ph.D",
+    "bidang": "Keamanan Siber"
+  },
+  {
+    "id": "11",
+    "nidn": "0601018011",
+    "nama": "Rina Wati, M.Kom",
+    "bidang": "Basis Data"
+  },
+  {
+    "id": "12",
+    "nidn": "0601018012",
+    "nama": "Doni Pratama, M.Cs",
+    "bidang": "Cloud Computing"
+  },
+  {
+    "id": "13",
+    "nidn": "0601018013",
+    "nama": "Eka Yuliana, S.T, M.T",
+    "bidang": "Sistem Embedded"
+  },
+  {
+    "id": "14",
+    "nidn": "0601018014",
+    "nama": "Rizky Ramadhan, M.Kom",
+    "bidang": "Web Development"
+  },
+  {
+    "id": "15",
+    "nidn": "0601018015",
+    "nama": "Dr. Nurul Hidayah",
+    "bidang": "Bioinformatika"
+  },
+  {
+    "id": "16",
+    "nidn": "0601018016",
+    "nama": "Teguh Santoso, M.T",
+    "bidang": "Robotika"
+  },
+  {
+    "id": "17",
+    "nidn": "0601018017",
+    "nama": "Ani Suryani, M.Kom",
+    "bidang": "UI/UX Design"
+  },
+  {
+    "id": "18",
+    "nidn": "0601018018",
+    "nama": "Wahyu Hidayat, Ph.D",
+    "bidang": "Blockchain"
+  },
+  {
+    "id": "19",
+    "nidn": "0601018019",
+    "nama": "Desi Ratnasari, M.Cs",
+    "bidang": "E-Commerce"
+  },
+  {
+    "id": "20",
+    "nidn": "0601018020",
+    "nama": "Indra Wijaya, M.Kom",
+    "bidang": "Audit Sistem Informasi"
+  }
 ]

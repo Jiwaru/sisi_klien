@@ -17,18 +17,19 @@ const DosenTable = ({ data, onEdit, onDelete }) => {
           {data.length === 0 ? (
             <tr>
               <td colSpan="4" className="text-center py-4 text-gray-500">
-                Belum ada data dosen.
+                Tidak ada data dosen.
               </td>
             </tr>
           ) : (
-            data.map((item, index) => (
+            data.map((item) => (
               <tr
                 key={item.id}
+                // 👇 PERBAIKAN: class 'border-b' DIHAPUS agar sama dengan MahasiswaTable
                 className="odd:bg-white even:bg-gray-100 hover:bg-gray-50"
               >
                 <td className="py-2 px-4 font-medium">{item.nidn}</td>
                 <td className="py-2 px-4">{item.nama}</td>
-                <td className="py-2 px-4">{item.keahlian}</td>
+                <td className="py-2 px-4">{item.bidang}</td>
                 <td className="py-2 px-4 text-center flex justify-center gap-2">
                   <Button
                     size="sm"

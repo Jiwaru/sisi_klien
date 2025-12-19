@@ -1,4 +1,9 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  keepPreviousData,
+} from "@tanstack/react-query"; // Pastikan import keepPreviousData
 import {
   getDosen,
   storeDosen,
@@ -7,13 +12,19 @@ import {
 } from "@/Utils/Apis/DosenApi";
 import { toastSuccess, toastError } from "@/Utils/Helpers/ToastHelpers";
 
-export const useDosen = () =>
+// --- UPDATE BAGIAN INI (Fetch dengan Pagination) ---
+export const useDosen = (params = {}) =>
   useQuery({
-    queryKey: ["dosen"],
-    queryFn: getDosen,
-    select: (res) => res.data,
+    queryKey: ["dosen", params], // Key dinamis ikut params
+    queryFn: () => getDosen(params),
+    placeholderData: keepPreviousData, // Agar transisi halaman mulus
+    select: (res) => ({
+      data: res?.data ?? [], // Ambil array data
+      total: parseInt(res.headers["x-total-count"] || 0), // Ambil total dari header json-server
+    }),
   });
 
+// --- BAGIAN MUTATION (Tidak Perlu Diubah/Tetap Sama) ---
 export const useStoreDosen = () => {
   const queryClient = useQueryClient();
   return useMutation({

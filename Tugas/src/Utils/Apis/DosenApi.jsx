@@ -1,6 +1,8 @@
-import axios from "@/Utils/AxiosInstance";
+import AxiosInstance from "@/Utils/AxiosInstance";
 
-export const getDosen = () => axios.get("/dosen");
-export const storeDosen = (data) => axios.post("/dosen", data);
-export const updateDosen = (id, data) => axios.put(`/dosen/${id}`, data);
-export const deleteDosen = (id) => axios.delete(`/dosen/${id}`);
+export const getDosen = (params) => AxiosInstance.get("/dosen", { params });
+
+export const storeDosen = (data) => AxiosInstance.post("/dosen", data);
+export const updateDosen = (id, data) =>
+  AxiosInstance.put(`/dosen/${id}`, data);
+export const deleteDosen = (id) => AxiosInstance.delete(`/dosen/${id}`);

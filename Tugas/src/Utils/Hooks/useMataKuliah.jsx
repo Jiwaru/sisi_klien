@@ -1,4 +1,9 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  keepPreviousData,
+} from "@tanstack/react-query"; // 👈 Pastikan ejaan keepPreviousData benar
 import {
   getMataKuliah,
   storeMataKuliah,
@@ -7,13 +12,19 @@ import {
 } from "@/Utils/Apis/MataKuliahApi";
 import { toastSuccess, toastError } from "@/Utils/Helpers/ToastHelpers";
 
-export const useMataKuliah = () =>
+// --- UPDATE BAGIAN FETCH INI (Pagination Support) ---
+export const useMataKuliah = (params = {}) =>
   useQuery({
-    queryKey: ["matakuliah"],
-    queryFn: getMataKuliah,
-    select: (res) => res.data,
+    queryKey: ["matakuliah", params],
+    queryFn: () => getMataKuliah(params),
+    placeholderData: keepPreviousData, // Agar transisi halaman mulus
+    select: (res) => ({
+      data: res?.data ?? [],
+      total: parseInt(res.headers["x-total-count"] || 0),
+    }),
   });
 
+// --- BAGIAN MUTATION (Tetap Sama) ---
 export const useStoreMataKuliah = () => {
   const queryClient = useQueryClient();
   return useMutation({

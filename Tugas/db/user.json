@@ -13,7 +13,13 @@
       "mahasiswa.update",
       "mahasiswa.delete",
       "dosen.page",
-      "matakuliah.page"
+      "dosen.create",
+      "dosen.update",
+      "dosen.delete",
+      "matakuliah.page",
+      "matakuliah.create",
+      "matakuliah.update",
+      "matakuliah.delete"
     ]
   },
   {

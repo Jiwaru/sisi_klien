@@ -1,32 +1,122 @@
 [
   {
     "id": "1",
-    "nim": "A11.2022.14001",
+    "nim": "A11.2023.15001",
     "nama": "Budi Santoso",
     "status": "Aktif"
   },
   {
     "id": "2",
-    "nim": "A11.2022.14002",
+    "nim": "A11.2023.15002",
     "nama": "Siti Aminah",
     "status": "Cuti"
   },
   {
     "id": "3",
-    "nim": "A11.2022.14003",
+    "nim": "A11.2023.15003",
     "nama": "Rizky Pratama",
-    "status": "Lulus"
+    "status": "Aktif"
   },
   {
     "id": "4",
-    "nim": "A11.2022.14004",
+    "nim": "A11.2023.15004",
     "nama": "Dewi Lestari",
-    "status": "Aktif"
+    "status": "Lulus"
   },
   {
     "id": "5",
-    "nim": "A11.2022.14005",
+    "nim": "A11.2023.15005",
     "nama": "Andi Saputra",
     "status": "Aktif"
+  },
+  {
+    "id": "6",
+    "nim": "A11.2023.15006",
+    "nama": "Fajar Nugraha",
+    "status": "Aktif"
+  },
+  {
+    "id": "7",
+    "nim": "A11.2023.15007",
+    "nama": "Rina Kartika",
+    "status": "Non-Aktif"
+  },
+  {
+    "id": "8",
+    "nim": "A11.2023.15008",
+    "nama": "Eko Prasetyo",
+    "status": "Aktif"
+  },
+  {
+    "id": "9",
+    "nim": "A11.2023.15009",
+    "nama": "Nisa Fauziah",
+    "status": "Aktif"
+  },
+  {
+    "id": "10",
+    "nim": "A11.2023.15010",
+    "nama": "Hendra Wijaya",
+    "status": "Lulus"
+  },
+  {
+    "id": "11",
+    "nim": "A11.2023.15011",
+    "nama": "Maya Sari",
+    "status": "Aktif"
+  },
+  {
+    "id": "12",
+    "nim": "A11.2023.15012",
+    "nama": "Dimas Anggara",
+    "status": "Cuti"
+  },
+  {
+    "id": "13",
+    "nim": "A11.2023.15013",
+    "nama": "Yuni Astuti",
+    "status": "Aktif"
+  },
+  {
+    "id": "14",
+    "nim": "A11.2023.15014",
+    "nama": "Reza Rahardian",
+    "status": "Aktif"
+  },
+  {
+    "id": "15",
+    "nim": "A11.2023.15015",
+    "nama": "Citra Kirana",
+    "status": "Lulus"
+  },
+  {
+    "id": "16",
+    "nim": "A11.2023.15016",
+    "nama": "Bambang Pamungkas",
+    "status": "Aktif"
+  },
+  {
+    "id": "17",
+    "nim": "A11.2023.15017",
+    "nama": "Lestari Puji",
+    "status": "Non-Aktif"
+  },
+  {
+    "id": "18",
+    "nim": "A11.2023.15018",
+    "nama": "Agus Salim",
+    "status": "Aktif"
+  },
+  {
+    "id": "19",
+    "nim": "A11.2023.15019",
+    "nama": "Putri Ayu",
+    "status": "Aktif"
+  },
+  {
+    "id": "20",
+    "nim": "A11.2023.15020",
+    "nama": "Joko Anwar",
+    "status": "Lulus"
   }
 ]

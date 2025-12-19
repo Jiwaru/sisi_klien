@@ -1,4 +1,9 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  keepPreviousData,
+} from "@tanstack/react-query";
 import {
   getAllMahasiswa,
   getMahasiswaById,
@@ -8,30 +13,30 @@ import {
 } from "@/Utils/Apis/MahasiswaApi";
 import { toastSuccess, toastError } from "@/Utils/Helpers/ToastHelpers";
 
-// 1. Fetch All
-export const useMahasiswa = () =>
+export const useMahasiswa = (params = {}) =>
   useQuery({
-    queryKey: ["mahasiswa"], // Key unik untuk cache
-    queryFn: getAllMahasiswa,
-    select: (res) => res.data, // Ambil data langsung dari response
+    queryKey: ["mahasiswa", params],
+    queryFn: () => getAllMahasiswa(params),
+    placeholderData: keepPreviousData,
+    select: (res) => ({
+      data: res?.data ?? [],
+      total: parseInt(res.headers["x-total-count"] || 0),
+    }),
   });
 
-// 2. Fetch By ID (Detail)
 export const useMahasiswaDetail = (id) =>
   useQuery({
     queryKey: ["mahasiswa", id],
     queryFn: () => getMahasiswaById(id),
     select: (res) => res.data,
-    enabled: !!id, // Hanya jalan jika ID ada
+    enabled: !!id,
   });
 
-// 3. Tambah Data
 export const useStoreMahasiswa = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: storeMahasiswa,
     onSuccess: () => {
-      // Refresh data otomatis setelah sukses
       queryClient.invalidateQueries({ queryKey: ["mahasiswa"] });
       toastSuccess("Mahasiswa berhasil ditambahkan!");
     },
@@ -39,7 +44,6 @@ export const useStoreMahasiswa = () => {
   });
 };
 
-// 4. Update Data
 export const useUpdateMahasiswa = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -52,7 +56,6 @@ export const useUpdateMahasiswa = () => {
   });
 };
 
-// 5. Hapus Data
 export const useDeleteMahasiswa = () => {
   const queryClient = useQueryClient();
   return useMutation({
