@@ -1,81 +1,78 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Card from "@/Pages/Auth/Components/Card";
 import Heading from "@/Pages/Auth/Components/Heading";
 import Button from "@/Pages/Auth/Components/Button";
 import MataKuliahTable from "./MataKuliahTable";
 import MataKuliahModal from "./MataKuliahModal";
+
+// 1. Import Hooks React Query
 import {
-  getMataKuliah,
-  storeMataKuliah,
-  updateMataKuliah,
-  deleteMataKuliah,
-} from "@/Utils/Apis/MataKuliahApi";
+  useMataKuliah,
+  useStoreMataKuliah,
+  useUpdateMataKuliah,
+  useDeleteMataKuliah,
+} from "@/Utils/Hooks/useMataKuliah";
+
+// 2. Import Helper & Context
 import { confirmDelete, confirmUpdate } from "@/Utils/Helpers/SwalHelpers";
-import { toastSuccess, toastError } from "@/Utils/Helpers/ToastHelpers";
+import { toastError } from "@/Utils/Helpers/ToastHelpers";
+import { useAuthStateContext } from "@/Utils/Contexts/AuthContext";
 
 const MataKuliah = () => {
-  const [data, setData] = useState([]);
+  const { user } = useAuthStateContext();
   const [selectedData, setSelectedData] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
-  const fetchData = async () => {
-    setIsLoading(true);
-    try {
-      const res = await getMataKuliah();
-      setData(res.data);
-    } catch (error) {
-      toastError("Gagal mengambil data MK");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // 3. Gunakan Hook Fetch
+  const { data: mataKuliah = [], isLoading, isError } = useMataKuliah();
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  // 4. Gunakan Hook Mutasi
+  const { mutate: store } = useStoreMataKuliah();
+  const { mutate: update } = useUpdateMataKuliah();
+  const { mutate: remove } = useDeleteMataKuliah();
 
   const openAddModal = () => {
     setSelectedData(null);
     setModalOpen(true);
   };
-
   const openEditModal = (item) => {
     setSelectedData(item);
     setModalOpen(true);
   };
 
-  const handleSubmit = async (form) => {
-    try {
-      if (selectedData) {
-        confirmUpdate(async () => {
-          await updateMataKuliah(selectedData.id, form);
-          toastSuccess("Mata Kuliah diupdate");
-          setModalOpen(false);
-          fetchData();
-        });
-      } else {
-        await storeMataKuliah(form);
-        toastSuccess("Mata Kuliah ditambah");
+  // Logic Simpan
+  const handleSubmit = (formData) => {
+    if (selectedData) {
+      // Update
+      confirmUpdate(() => {
+        update({ id: selectedData.id, data: formData });
         setModalOpen(false);
-        fetchData();
+      });
+    } else {
+      // Create
+      const isExist = mataKuliah.some((m) => m.kode === formData.kode);
+      if (isExist) {
+        toastError("Kode Mata Kuliah sudah ada!");
+        return;
       }
-    } catch (error) {
-      toastError("Gagal menyimpan data");
+      store(formData);
+      setModalOpen(false);
     }
   };
 
+  // Logic Hapus
   const handleDelete = (id) => {
-    confirmDelete(async () => {
-      try {
-        await deleteMataKuliah(id);
-        toastSuccess("Mata Kuliah dihapus");
-        fetchData();
-      } catch (error) {
-        toastError("Gagal menghapus data");
-      }
+    confirmDelete(() => {
+      remove(id);
     });
   };
+
+  if (isError)
+    return (
+      <p className="text-red-500 text-center py-4">
+        Gagal mengambil data mata kuliah.
+      </p>
+    );
 
   return (
     <>
@@ -90,13 +87,18 @@ const MataKuliah = () => {
           <Heading as="h2" className="mb-0">
             Daftar Mata Kuliah
           </Heading>
-          <Button onClick={openAddModal}>+ Tambah MK</Button>
+
+          {/* Cek Permission */}
+          {user?.permission?.includes("matakuliah.create") && (
+            <Button onClick={openAddModal}>+ Tambah MK</Button>
+          )}
         </div>
+
         {isLoading ? (
-          <p>Loading...</p>
+          <p className="text-center py-4 text-gray-500">Memuat data...</p>
         ) : (
           <MataKuliahTable
-            data={data}
+            data={mataKuliah}
             onEdit={openEditModal}
             onDelete={handleDelete}
           />

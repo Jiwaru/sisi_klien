@@ -1,91 +1,70 @@
-import React, { useState, useEffect } from "react";
-
+import React, { useState } from "react";
 import Card from "@/Pages/Auth/Components/Card";
 import Heading from "@/Pages/Auth/Components/Heading";
 import Button from "@/Pages/Auth/Components/Button";
-
 import DosenTable from "./DosenTable";
 import DosenModal from "./DosenModal";
 
 import {
-  getDosen,
-  storeDosen,
-  updateDosen,
-  deleteDosen,
-} from "@/Utils/Apis/DosenApi";
+  useDosen,
+  useStoreDosen,
+  useUpdateDosen,
+  useDeleteDosen,
+} from "@/Utils/Hooks/useDosen";
+
 import { confirmDelete, confirmUpdate } from "@/Utils/Helpers/SwalHelpers";
-import { toastSuccess, toastError } from "@/Utils/Helpers/ToastHelpers";
+import { toastError } from "@/Utils/Helpers/ToastHelpers";
+import { useAuthStateContext } from "@/Utils/Contexts/AuthContext";
 
 const Dosen = () => {
-  const [dosen, setDosen] = useState([]);
+  const { user } = useAuthStateContext();
   const [selectedDosen, setSelectedDosen] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
-  const fetchData = async () => {
-    setIsLoading(true);
-    try {
-      const res = await getDosen();
-      setDosen(res.data);
-    } catch (error) {
-      toastError("Gagal mengambil data dosen: " + error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { data: dosen = [], isLoading, isError } = useDosen();
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const { mutate: store } = useStoreDosen();
+  const { mutate: update } = useUpdateDosen();
+  const { mutate: remove } = useDeleteDosen();
 
   const openAddModal = () => {
     setSelectedDosen(null);
     setModalOpen(true);
   };
-
   const openEditModal = (data) => {
     setSelectedDosen(data);
     setModalOpen(true);
   };
 
-  const handleSubmit = async (formData) => {
-    try {
-      if (selectedDosen) {
-        confirmUpdate(async () => {
-          await updateDosen(selectedDosen.id, formData);
-          toastSuccess("Data dosen berhasil diperbarui!");
-          setModalOpen(false);
-          fetchData();
-        });
-      } else {
-        const isExist = dosen.some((d) => d.nidn === formData.nidn);
-        if (isExist) {
-          toastError("NIDN sudah terdaftar!");
-          return;
-        }
-
-        await storeDosen(formData);
-        toastSuccess("Data dosen berhasil ditambahkan!");
+  const handleSubmit = (formData) => {
+    if (selectedDosen) {
+      confirmUpdate(() => {
+        update({ id: selectedDosen.id, data: formData });
         setModalOpen(false);
-        fetchData();
+      });
+    } else {
+      const isExist = dosen.some((d) => d.nidn === formData.nidn);
+      if (isExist) {
+        toastError("NIDN sudah terdaftar!");
+        return;
       }
-    } catch (error) {
-      toastError("Terjadi kesalahan saat menyimpan data.");
-      console.error(error);
+      store(formData);
+      setModalOpen(false);
     }
   };
 
   const handleDelete = (id) => {
-    confirmDelete(async () => {
-      try {
-        await deleteDosen(id);
-        toastSuccess("Data dosen berhasil dihapus!");
-        fetchData();
-      } catch (error) {
-        toastError("Gagal menghapus data.");
-      }
+    confirmDelete(() => {
+      remove(id);
     });
   };
+
+  if (isError)
+    return (
+      <p className="text-red-500 text-center py-4">
+        Gagal mengambil data dosen.
+      </p>
+    );
 
   return (
     <>
@@ -101,7 +80,9 @@ const Dosen = () => {
           <Heading as="h2" className="mb-0 text-left">
             Daftar Dosen
           </Heading>
-          <Button onClick={openAddModal}>+ Tambah Dosen</Button>
+          {user?.permission?.includes("dosen.create") && (
+            <Button onClick={openAddModal}>+ Tambah Dosen</Button>
+          )}
         </div>
 
         {isLoading ? (
