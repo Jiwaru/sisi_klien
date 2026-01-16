@@ -1,0 +1,49 @@
+@import "tailwindcss";
+@import "@fontsource/outfit";
+
+:root {
+  --font-family: "Outfit", sans-serif;
+
+  /* Modern Premium Palette */
+  --color-primary: #4f46e5; /* Indigo 600 */
+  --color-primary-hover: #4338ca; /* Indigo 700 */
+  --color-secondary: #0f172a; /* Slate 900 */
+  --color-accent: #8b5cf6; /* Violet 500 */
+
+  --color-bg-body: #f8fafc; /* Slate 50 */
+  --color-bg-card: #ffffff;
+
+  --color-text-main: #1e293b; /* Slate 800 */
+  --color-text-muted: #64748b; /* Slate 500 */
+}
+
+@theme {
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary);
+  --color-accent: var(--color-accent);
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--color-bg-body);
+  color: var(--color-text-main);
+  antialiased: true;
+}
+
+/* Glassmorphism Utilities */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-dark {
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}

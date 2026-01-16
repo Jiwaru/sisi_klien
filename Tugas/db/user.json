@@ -19,7 +19,11 @@
       "matakuliah.page",
       "matakuliah.create",
       "matakuliah.update",
-      "matakuliah.delete"
+      "matakuliah.delete",
+      "rencana-studi.page",
+      "rencana-studi.create",
+      "rencana-studi.update",
+      "rencana-studi.delete"
     ]
   },
   {
@@ -28,6 +32,11 @@
     "email": "staff@mail.com",
     "password": "123",
     "role": "staff",
-    "permission": ["dashboard.page", "mahasiswa.page", "mahasiswa.read"]
+    "permission": [
+      "dashboard.page",
+      "mahasiswa.page",
+      "mahasiswa.read",
+      "rencana-studi.page"
+    ]
   }
 ]

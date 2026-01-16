@@ -2,121 +2,71 @@
   {
     "id": "1",
     "nim": "A11.2023.15001",
-    "nama": "Budi Santoso",
-    "status": "Aktif"
+    "name": "Budi Santoso",
+    "status": "Aktif",
+    "max_sks": 24
   },
   {
     "id": "2",
     "nim": "A11.2023.15002",
-    "nama": "Siti Aminah",
-    "status": "Cuti"
+    "name": "Siti Aminah",
+    "status": "Cuti",
+    "max_sks": 0
   },
   {
     "id": "3",
     "nim": "A11.2023.15003",
-    "nama": "Rizky Pratama",
-    "status": "Aktif"
+    "name": "Rizky Pratama",
+    "status": "Aktif",
+    "max_sks": 20
   },
   {
     "id": "4",
     "nim": "A11.2023.15004",
-    "nama": "Dewi Lestari",
-    "status": "Lulus"
+    "name": "Dewi Lestari",
+    "status": "Lulus",
+    "max_sks": 24
   },
   {
     "id": "5",
     "nim": "A11.2023.15005",
-    "nama": "Andi Saputra",
-    "status": "Aktif"
+    "name": "Andi Saputra",
+    "status": "Aktif",
+    "max_sks": 18
   },
   {
     "id": "6",
     "nim": "A11.2023.15006",
-    "nama": "Fajar Nugraha",
-    "status": "Aktif"
+    "name": "Fajar Nugraha",
+    "status": "Aktif",
+    "max_sks": 22
   },
   {
     "id": "7",
     "nim": "A11.2023.15007",
-    "nama": "Rina Kartika",
-    "status": "Non-Aktif"
+    "name": "Rina Kartika",
+    "status": "Non-Aktif",
+    "max_sks": 0
   },
   {
     "id": "8",
     "nim": "A11.2023.15008",
-    "nama": "Eko Prasetyo",
-    "status": "Aktif"
+    "name": "Eko Prasetyo",
+    "status": "Aktif",
+    "max_sks": 24
   },
   {
     "id": "9",
     "nim": "A11.2023.15009",
-    "nama": "Nisa Fauziah",
-    "status": "Aktif"
+    "name": "Nisa Fauziah",
+    "status": "Aktif",
+    "max_sks": 20
   },
   {
     "id": "10",
     "nim": "A11.2023.15010",
-    "nama": "Hendra Wijaya",
-    "status": "Lulus"
-  },
-  {
-    "id": "11",
-    "nim": "A11.2023.15011",
-    "nama": "Maya Sari",
-    "status": "Aktif"
-  },
-  {
-    "id": "12",
-    "nim": "A11.2023.15012",
-    "nama": "Dimas Anggara",
-    "status": "Cuti"
-  },
-  {
-    "id": "13",
-    "nim": "A11.2023.15013",
-    "nama": "Yuni Astuti",
-    "status": "Aktif"
-  },
-  {
-    "id": "14",
-    "nim": "A11.2023.15014",
-    "nama": "Reza Rahardian",
-    "status": "Aktif"
-  },
-  {
-    "id": "15",
-    "nim": "A11.2023.15015",
-    "nama": "Citra Kirana",
-    "status": "Lulus"
-  },
-  {
-    "id": "16",
-    "nim": "A11.2023.15016",
-    "nama": "Bambang Pamungkas",
-    "status": "Aktif"
-  },
-  {
-    "id": "17",
-    "nim": "A11.2023.15017",
-    "nama": "Lestari Puji",
-    "status": "Non-Aktif"
-  },
-  {
-    "id": "18",
-    "nim": "A11.2023.15018",
-    "nama": "Agus Salim",
-    "status": "Aktif"
-  },
-  {
-    "id": "19",
-    "nim": "A11.2023.15019",
-    "nama": "Putri Ayu",
-    "status": "Aktif"
-  },
-  {
-    "id": "20",
-    "nim": "A11.2023.15020",
-    "nama": "Joko Anwar",
-    "status": "Lulus"
+    "name": "Hendra Wijaya",
+    "status": "Lulus",
+    "max_sks": 24
   }
 ]

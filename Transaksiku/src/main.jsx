@@ -6,14 +6,18 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-import "./App.css";
+import "./index.css";
 
 import AuthLayout from "@/Pages/Layouts/AuthLayout";
 import AdminLayout from "@/Pages/Layouts/AdminLayout";
 import ProtectedRoute from "@/Pages/Layouts/Components/ProtectedRoute";
 import Login from "@/Pages/Auth/Login";
 import PageNotFound from "@/Pages/PageNotFound";
+import Dashboard from "@/Pages/Dashboard/Dashboard";
+import AccountsPage from "@/Pages/Accounts/AccountsPage";
+import ReportsPage from "@/Pages/Reports/ReportsPage";
 import TransferPage from "@/Pages/Transfer/TransferPage";
+import SettingsPage from "@/Pages/Settings/SettingsPage";
 
 import { Toaster } from "react-hot-toast";
 
@@ -38,11 +42,27 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Navigate to="TransferPage" />,
+        element: <Navigate to="dashboard" />,
+      },
+      {
+        path: "dashboard",
+        element: <Dashboard />,
+      },
+      {
+        path: "rekening",
+        element: <AccountsPage />,
+      },
+      {
+        path: "laporan",
+        element: <ReportsPage />,
       },
       {
         path: "transfer",
         element: <TransferPage />,
+      },
+      {
+        path: "settings",
+        element: <SettingsPage />,
       },
     ],
   },
@@ -52,9 +72,18 @@ const router = createBrowserRouter([
   },
 ]);
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ThemeProvider } from "./Context/ThemeContext";
+
+const queryClient = new QueryClient();
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <Toaster position="top-right" />
-    <RouterProvider router={router} />
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider defaultTheme="light" storageKey="transaksiku-theme">
+        <Toaster position="top-right" />
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    </QueryClientProvider>
   </React.StrictMode>
 );

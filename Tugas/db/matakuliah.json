@@ -1,4 +1,7 @@
 [
   { "id": "1", "kode": "MK001", "nama": "Pemrograman Web", "sks": 3 },
-  { "id": "2", "kode": "MK002", "nama": "Basis Data", "sks": 4 }
+  { "id": "2", "kode": "MK002", "nama": "Basis Data", "sks": 4 },
+  { "id": "3", "kode": "MK003", "nama": "Algoritma Pemrograman", "sks": 4 },
+  { "id": "4", "kode": "MK004", "nama": "Jaringan Komputer", "sks": 3 },
+  { "id": "5", "kode": "MK005", "nama": "Sistem Operasi", "sks": 3 }
 ]

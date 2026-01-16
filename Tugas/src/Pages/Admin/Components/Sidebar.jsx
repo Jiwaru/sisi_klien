@@ -4,7 +4,10 @@ import { useAuthStateContext } from "@/Utils/Contexts/AuthContext";
 
 const Sidebar = () => {
   const { user } = useAuthStateContext();
+  console.log("Permission User:", user?.permission);
+  console.log("Cek Akses:", user?.permission?.includes("rencana-studi.page"));
 
+  // Helper function untuk cek permission
   const hasPermission = (perm) => user?.permission?.includes(perm);
 
   return (
@@ -16,6 +19,7 @@ const Sidebar = () => {
         </span>
       </div>
       <nav className="p-4 space-y-2">
+        {/* Menu Dashboard */}
         {hasPermission("dashboard.page") && (
           <NavLink
             to="/admin/dashboard"
@@ -30,6 +34,7 @@ const Sidebar = () => {
           </NavLink>
         )}
 
+        {/* Menu Mahasiswa */}
         {hasPermission("mahasiswa.page") && (
           <NavLink
             to="/admin/mahasiswa"
@@ -44,6 +49,7 @@ const Sidebar = () => {
           </NavLink>
         )}
 
+        {/* Menu Dosen */}
         {hasPermission("dosen.page") && (
           <NavLink
             to="/admin/dosen"
@@ -58,6 +64,7 @@ const Sidebar = () => {
           </NavLink>
         )}
 
+        {/* Menu Mata Kuliah */}
         {hasPermission("matakuliah.page") && (
           <NavLink
             to="/admin/matakuliah"
@@ -69,6 +76,21 @@ const Sidebar = () => {
           >
             <span>📚</span>
             <span className="hidden lg:inline">Mata Kuliah</span>
+          </NavLink>
+        )}
+
+        {/* 👇 MENU BARU: RENCANA STUDI 👇 */}
+        {hasPermission("rencana-studi.page") && (
+          <NavLink
+            to="/admin/rencana-studi"
+            className={({ isActive }) =>
+              `flex items-center space-x-2 px-4 py-2 rounded transition-colors ${
+                isActive ? "bg-blue-700" : "hover:bg-blue-700"
+              }`
+            }
+          >
+            <span>📝</span>
+            <span className="hidden lg:inline">Rencana Studi</span>
           </NavLink>
         )}
       </nav>
