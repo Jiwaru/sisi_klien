@@ -2,7 +2,14 @@
 const getRandomDate = () => {
   const today = new Date();
   const past = new Date();
-  past.setMonth(today.getMonth() - 3);
+
+  // 60% chance to be within last 7 days for better chart demos
+  if (Math.random() > 0.4) {
+    past.setDate(today.getDate() - 7);
+  } else {
+    past.setMonth(today.getMonth() - 2);
+  }
+
   return new Date(
     past.getTime() + Math.random() * (today.getTime() - past.getTime())
   );

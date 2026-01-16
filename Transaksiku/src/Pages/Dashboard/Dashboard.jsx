@@ -1,20 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import StatsCards from "./Components/StatsCards";
 import AnalyticsCharts from "./Components/AnalyticsCharts";
-import { dashboardStats, transactions } from "@/Data/Dummy";
 import { Loader2 } from "lucide-react";
+import {
+  useDashboardStats,
+  useDashboardTransactions,
+} from "./Hooks/useDashboard";
 
 const Dashboard = () => {
-  const [loading, setLoading] = useState(true);
+  const { data: stats, isLoading: statsLoading } = useDashboardStats();
+  const { data: trx, isLoading: trxLoading } = useDashboardTransactions();
 
-  useEffect(() => {
-    // Simulate API load
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  }, []);
-
-  if (loading) {
+  if (statsLoading || trxLoading) {
     return (
       <div className="flex h-[80vh] w-full items-center justify-center">
         <Loader2 className="h-10 w-10 animate-spin text-indigo-500" />
@@ -33,9 +30,9 @@ const Dashboard = () => {
         </p>
       </div>
 
-      <StatsCards stats={dashboardStats} />
+      <StatsCards stats={stats} />
 
-      <AnalyticsCharts transactions={transactions} />
+      <AnalyticsCharts transactions={trx} />
     </div>
   );
 };

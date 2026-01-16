@@ -1,25 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Swal from "sweetalert2";
 import TransferForm from "./Components/TransferForm";
 import TransactionList from "./Components/TransactionList";
-import { transactions as dummyTransaksiList } from "@/Data/Dummy";
 import { toastSuccess, toastError } from "@/Utils/Helpers/ToastHelpers";
 import { Loader2 } from "lucide-react";
+import { useRecentTransfers, useCreateTransfer } from "./Hooks/useTransfer";
 
 const TransferPage = () => {
   const [form, setForm] = useState({ tujuan: "", nominal: "", catatan: "" });
-  const [transaksiList, setTransaksiList] = useState([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    setLoading(true);
-    // Simulate initial fetch delay
-    const timer = setTimeout(() => {
-      setTransaksiList(dummyTransaksiList);
-      setLoading(false);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
+  const { data: transaksiList, isLoading } = useRecentTransfers();
+  const transferMutation = useCreateTransfer();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -75,34 +66,23 @@ const TransferPage = () => {
   };
 
   const executeTransfer = () => {
-    setLoading(true);
-    setTimeout(() => {
-      // Optimistic update
-      const newTrx = {
-        id: `TRX${Math.floor(Math.random() * 10000)}`,
-        date: new Date().toISOString(),
-        description: form.catatan || `Transfer ke ${form.tujuan}`,
-        amount: +form.nominal,
-        type: "Transfer Keluar",
-        status: "Berhasil",
-        recipient: form.tujuan, // Store string name as per our fix
-        category: "Lainnya",
-      };
+    transferMutation.mutate(form, {
+      onSuccess: (data) => {
+        setForm({ tujuan: "", nominal: "", catatan: "" });
 
-      setTransaksiList((prev) => [newTrx, ...prev]);
-
-      setForm({ tujuan: "", nominal: "", catatan: "" });
-      setLoading(false);
-
-      // Digital Receipt (SweetAlert success)
-      Swal.fire({
-        title: "Transfer Berhasil!",
-        html: `<p class="text-gray-500 text-sm mb-4">Ref: ${newTrx.id}</p>`,
-        icon: "success",
-        confirmButtonText: "Selesai",
-        confirmButtonColor: "#10B981",
-      });
-    }, 1500);
+        // Digital Receipt (SweetAlert success)
+        Swal.fire({
+          title: "Transfer Berhasil!",
+          html: `<p class="text-gray-500 text-sm mb-4">Ref: ${data.id}</p>`,
+          icon: "success",
+          confirmButtonText: "Selesai",
+          confirmButtonColor: "#10B981",
+        });
+      },
+      onError: (err) => {
+        toastError("Transfer Gagal: " + err.message);
+      },
+    });
   };
 
   return (
@@ -130,7 +110,7 @@ const TransferPage = () => {
               onChange={handleChange}
               onSubmit={handleSubmit}
               onSaveTemplate={handleSaveTemplate}
-              disabled={loading}
+              disabled={isLoading || transferMutation.isPending}
             />
           </div>
         </div>
@@ -142,12 +122,12 @@ const TransferPage = () => {
               <h3 className="font-bold text-lg text-gray-800">
                 Riwayat Transfer
               </h3>
-              {loading && (
+              {(isLoading || transferMutation.isPending) && (
                 <Loader2 className="w-4 h-4 animate-spin text-indigo-600" />
               )}
             </div>
             <div className="p-6">
-              <TransactionList transaksiList={transaksiList} />
+              <TransactionList transaksiList={transaksiList || []} />
             </div>
           </div>
         </div>

@@ -11,6 +11,7 @@ import "./index.css";
 import AuthLayout from "@/Pages/Layouts/AuthLayout";
 import AdminLayout from "@/Pages/Layouts/AdminLayout";
 import ProtectedRoute from "@/Pages/Layouts/Components/ProtectedRoute";
+import ErrorBoundary from "@/Pages/Layouts/Components/ErrorBoundary";
 import Login from "@/Pages/Auth/Login";
 import PageNotFound from "@/Pages/PageNotFound";
 import Dashboard from "@/Pages/Dashboard/Dashboard";
@@ -36,7 +37,9 @@ const router = createBrowserRouter([
     path: "/admin",
     element: (
       <ProtectedRoute>
-        <AdminLayout />
+        <ErrorBoundary>
+          <AdminLayout />
+        </ErrorBoundary>
       </ProtectedRoute>
     ),
     children: [

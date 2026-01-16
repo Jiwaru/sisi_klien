@@ -1,10 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { savedAccounts } from "@/Data/Dummy";
 
-// Simulated API calls with delay
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// Get Accounts with Filtering/Pagination logic simulation
 export const useAccounts = ({ page, search }) => {
   return useQuery({
     queryKey: ["accounts", { page, search }],
@@ -21,7 +19,6 @@ export const useAccounts = ({ page, search }) => {
         );
       }
 
-      // Pagination simulated (10 per page)
       const itemsPerPage = 8;
       const totalPages = Math.ceil(data.length / itemsPerPage);
       const paginatedData = data.slice(
@@ -42,13 +39,12 @@ export const useAccounts = ({ page, search }) => {
   });
 };
 
-// Create Account Hook
 export const useCreateAccount = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (newAccount) => {
       await delay(1000);
-      // Simulate backend validation
+
       const exists = savedAccounts.find(
         (a) => a.accountNumber === newAccount.accountNumber
       );
@@ -60,19 +56,49 @@ export const useCreateAccount = () => {
         avatar: `https://ui-avatars.com/api/?name=${newAccount.name}&background=random`,
       };
 
-      // Mutate local dummy data (since we don't have a real backend)
       savedAccounts.unshift(created);
-
       return created;
     },
-    onSuccess: () => {
-      // Invalidate queries to refresh list
+    onMutate: async (newAccount) => {
+      await queryClient.cancelQueries({ queryKey: ["accounts"] });
+
+      const previousAccounts = queryClient.getQueriesData({
+        queryKey: ["accounts"],
+      });
+
+      queryClient.setQueriesData({ queryKey: ["accounts"] }, (old) => {
+        if (!old) return old;
+        const tempAccount = {
+          ...newAccount,
+          id: `TEMP-${Date.now()}`,
+          avatar: `https://ui-avatars.com/api/?name=${newAccount.name}&background=random`,
+          isOptimistic: true,
+        };
+        return {
+          ...old,
+          data: [tempAccount, ...old.data],
+          meta: {
+            ...old.meta,
+            totalItems: old.meta.totalItems + 1,
+          },
+        };
+      });
+
+      return { previousAccounts };
+    },
+    onError: (err, newAccount, context) => {
+      if (context?.previousAccounts) {
+        context.previousAccounts.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["accounts"] });
     },
   });
 };
 
-// Update Account Hook
 export const useUpdateAccount = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -84,13 +110,39 @@ export const useUpdateAccount = () => {
       savedAccounts[index] = { ...savedAccounts[index], ...updatedAccount };
       return savedAccounts[index];
     },
-    onSuccess: () => {
+    onMutate: async (updatedAccount) => {
+      await queryClient.cancelQueries({ queryKey: ["accounts"] });
+      const previousAccounts = queryClient.getQueriesData({
+        queryKey: ["accounts"],
+      });
+
+      queryClient.setQueriesData({ queryKey: ["accounts"] }, (old) => {
+        if (!old) return old;
+        return {
+          ...old,
+          data: old.data.map((account) =>
+            account.id === updatedAccount.id
+              ? { ...account, ...updatedAccount }
+              : account
+          ),
+        };
+      });
+
+      return { previousAccounts };
+    },
+    onError: (err, updatedAccount, context) => {
+      if (context?.previousAccounts) {
+        context.previousAccounts.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["accounts"] });
     },
   });
 };
 
-// Delete Account Hook
 export const useDeleteAccount = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -100,13 +152,35 @@ export const useDeleteAccount = () => {
       if (index !== -1) savedAccounts.splice(index, 1);
       return accountId;
     },
-    onSuccess: () => {
+    onMutate: async (accountId) => {
+      await queryClient.cancelQueries({ queryKey: ["accounts"] });
+      const previousAccounts = queryClient.getQueriesData({
+        queryKey: ["accounts"],
+      });
+
+      queryClient.setQueriesData({ queryKey: ["accounts"] }, (old) => {
+        if (!old) return old;
+        return {
+          ...old,
+          data: old.data.filter((account) => account.id !== accountId),
+        };
+      });
+
+      return { previousAccounts };
+    },
+    onError: (err, variables, context) => {
+      if (context?.previousAccounts) {
+        context.previousAccounts.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["accounts"] });
     },
   });
 };
 
-// Bulk Delete Hook
 export const useBulkDeleteAccounts = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -118,7 +192,30 @@ export const useBulkDeleteAccounts = () => {
       });
       return accountIds;
     },
-    onSuccess: () => {
+    onMutate: async (accountIds) => {
+      await queryClient.cancelQueries({ queryKey: ["accounts"] });
+      const previousAccounts = queryClient.getQueriesData({
+        queryKey: ["accounts"],
+      });
+
+      queryClient.setQueriesData({ queryKey: ["accounts"] }, (old) => {
+        if (!old) return old;
+        return {
+          ...old,
+          data: old.data.filter((account) => !accountIds.includes(account.id)),
+        };
+      });
+
+      return { previousAccounts };
+    },
+    onError: (err, variables, context) => {
+      if (context?.previousAccounts) {
+        context.previousAccounts.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["accounts"] });
     },
   });

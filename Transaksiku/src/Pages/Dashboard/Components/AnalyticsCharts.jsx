@@ -116,7 +116,7 @@ const AnalyticsCharts = ({ transactions }) => {
         </h3>
         <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={last7DaysData}>
+            <AreaChart data={last7DaysData} margin={{ left: 20 }}>
               <defs>
                 <linearGradient id="colorMasuk" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#10B981" stopOpacity={0.1} />

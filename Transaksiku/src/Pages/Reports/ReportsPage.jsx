@@ -37,7 +37,7 @@ import Input from "@/Pages/Layouts/Components/Input";
 import Label from "@/Pages/Layouts/Components/Label";
 import { formatCurrency } from "@/Utils/Helpers/FormatHelpers";
 
-// HOC-wrapped Charts
+const ChartArea = withChartContainer(AreaChart);
 const ChartLine = withChartContainer(LineChart);
 const ChartBar = withChartContainer(BarChart);
 const ChartPie = withChartContainer(PieChart);
@@ -46,8 +46,9 @@ const ChartRadar = withChartContainer(RadarChart);
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
 
 const ReportsPage = () => {
+  // ... (filters state - no change needed)
   const [filters, setFilters] = useState({
-    startDate: "2024-01-01", // Default to beginning of year mainly for dummy data coverage
+    startDate: "2024-01-01",
     endDate: new Date().toISOString().split("T")[0],
     minAmount: "",
     maxAmount: "",
@@ -60,6 +61,7 @@ const ReportsPage = () => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
   };
 
+  // ... (loading state - no change needed)
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-[60vh]">
@@ -75,7 +77,7 @@ const ReportsPage = () => {
 
   return (
     <div className="animate-in fade-in duration-500 pb-12">
-      {/* Header */}
+      {/* Header & Filters ... (no change needed essentially but ensuring structure) */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <div>
           <h2 className="text-3xl font-bold text-gray-800 tracking-tight">
@@ -91,13 +93,14 @@ const ReportsPage = () => {
         </Button>
       </div>
 
-      {/* Filters Section (Compound Component Concept could be applied here conceptually) */}
+      {/* Filters Section */}
       <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-8">
         <div className="flex items-center gap-2 mb-4 text-indigo-600 font-semibold border-b border-gray-50 pb-2">
           <Filter size={20} />
           <h3>Filter Data</h3>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          {/* Filter Inputs (Reusing existing code logic normally, but restating for replacement safety) */}
           <div>
             <Label>Mulai Tanggal</Label>
             <Input
@@ -155,7 +158,42 @@ const ReportsPage = () => {
 
       {/* Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* Trend Chart (Line) */}
+        {/* 1. Area Chart (Balance Over Time) - Full Width */}
+        <div className="lg:col-span-2">
+          <ChartArea
+            title="Riwayat Saldo (Balance Over Time)"
+            data={charts.balance}
+            margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+          >
+            <defs>
+              <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <XAxis
+              dataKey="date"
+              tickFormatter={(d) =>
+                new Date(d).toLocaleDateString("id-ID", {
+                  day: "numeric",
+                  month: "short",
+                })
+              }
+            />
+            <YAxis tickFormatter={(val) => `Rp${val / 1000}k`} />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <Tooltip formatter={(value) => formatCurrency(value)} />
+            <Area
+              type="monotone"
+              dataKey="balance"
+              stroke="#8884d8"
+              fillOpacity={1}
+              fill="url(#colorBalance)"
+            />
+          </ChartArea>
+        </div>
+
+        {/* 2. Trend Chart (Line) */}
         <ChartLine
           title="Tren Transaksi (Harian)"
           data={charts.trend}
@@ -169,7 +207,12 @@ const ReportsPage = () => {
           <XAxis
             dataKey="date"
             tick={{ fontSize: 12 }}
-            tickFormatter={(d) => d.split("-").slice(1).join("/")}
+            tickFormatter={(d) =>
+              new Date(d).toLocaleDateString("id-ID", {
+                day: "numeric",
+                month: "short",
+              })
+            }
           />
           <YAxis
             tick={{ fontSize: 12 }}
@@ -195,7 +238,7 @@ const ReportsPage = () => {
           />
         </ChartLine>
 
-        {/* Status Distribution (Pie) */}
+        {/* 3. Status Distribution (Pie) */}
         <ChartPie title="Distribusi Status Transaksi" data={charts.status}>
           <Pie
             data={charts.status}
@@ -219,7 +262,7 @@ const ReportsPage = () => {
           <Legend verticalAlign="bottom" height={36} />
         </ChartPie>
 
-        {/* Top Recipients (Bar) */}
+        {/* 4. Top Recipients (Bar) */}
         <ChartBar
           title="Top 5 Penerima Transfer"
           data={charts.recipients}
@@ -256,9 +299,9 @@ const ReportsPage = () => {
           />
         </ChartBar>
 
-        {/* Radar Chart (Category Analysis) */}
+        {/* 5. Radar Chart (Monthly Comparison) */}
         <ChartRadar
-          title="Analisis Kategori (Frekuensi vs Nominal)"
+          title="Perbandingan Bulanan (Bulan Ini vs Lalu)"
           data={charts.radar}
         >
           <PolarGrid stroke="#E5E7EB" />
@@ -266,23 +309,23 @@ const ReportsPage = () => {
             dataKey="subject"
             tick={{ fontSize: 11, fill: "#6B7280" }}
           />
-          <PolarRadiusAxis angle={30} domain={[0, 10]} hide />
+          <PolarRadiusAxis angle={30} domain={[0, "auto"]} hide />
           <Radar
-            name="Frekuensi Trx"
+            name="Bulan Ini"
             dataKey="A"
             stroke="#8884d8"
             fill="#8884d8"
-            fillOpacity={0.6}
+            fillOpacity={0.5}
           />
           <Radar
-            name="Nominal (Scaled)"
+            name="Bulan Lalu"
             dataKey="B"
             stroke="#82ca9d"
             fill="#82ca9d"
-            fillOpacity={0.6}
+            fillOpacity={0.5}
           />
           <Legend />
-          <Tooltip />
+          <Tooltip formatter={(value) => formatCurrency(value)} />
         </ChartRadar>
       </div>
 
@@ -332,7 +375,13 @@ const ReportsPage = () => {
                     className="hover:bg-gray-50/50 transition-colors"
                   >
                     <td className="px-6 py-4 text-sm text-gray-600 font-mono">
-                      {trx.date}
+                      {new Date(trx.date).toLocaleDateString("id-ID", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </td>
                     <td className="px-6 py-4">
                       <p className="text-sm font-medium text-gray-800">
@@ -345,11 +394,9 @@ const ReportsPage = () => {
                     <td className="px-6 py-4">
                       <span
                         className={`text-xs px-2 py-1 rounded-full font-medium ${
-                          trx.type === "Masuk"
+                          trx.type === "Transfer Masuk" || trx.type === "Top Up"
                             ? "bg-green-100 text-green-700"
-                            : trx.type === "Keluar"
-                            ? "bg-red-100 text-red-700"
-                            : "bg-indigo-100 text-indigo-700"
+                            : "bg-red-100 text-red-700"
                         }`}
                       >
                         {trx.type}
@@ -373,12 +420,14 @@ const ReportsPage = () => {
                     </td>
                     <td
                       className={`px-6 py-4 text-sm font-semibold text-right ${
-                        trx.type === "Masuk"
+                        trx.type === "Transfer Masuk" || trx.type === "Top Up"
                           ? "text-green-600"
                           : "text-gray-800"
                       }`}
                     >
-                      {trx.type === "Masuk" ? "+" : ""}{" "}
+                      {trx.type === "Transfer Masuk" || trx.type === "Top Up"
+                        ? "+"
+                        : ""}{" "}
                       {formatCurrency(trx.amount)}
                     </td>
                   </tr>

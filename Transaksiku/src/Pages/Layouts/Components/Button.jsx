@@ -23,7 +23,7 @@ const Button = ({
   return (
     <button
       type={type}
-      className={`rounded-lg transition font-medium focus:outline-none cursor-pointer ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+      className={`rounded-lg transition font-medium focus:outline-none cursor-pointer flex items-center justify-center ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
       {...props}
     >
       {children}

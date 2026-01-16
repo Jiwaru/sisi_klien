@@ -10,7 +10,6 @@ import { dummyUser } from "@/Data/Dummy";
 
 const SettingsPage = () => {
   const { isDark, toggleTheme } = useTheme();
-  const queryClient = useQueryClient();
 
   // -- Profile State --
   const [profile, setProfile] = useState(dummyUser);

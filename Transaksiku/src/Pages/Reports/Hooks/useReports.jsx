@@ -8,21 +8,18 @@ import {
   subDays,
 } from "date-fns";
 
-// Mock API Delay
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const useReports = ({ filters }) => {
   return useQuery({
     queryKey: ["reports", filters],
     queryFn: async () => {
-      await delay(800); // Simulate network latency
+      await delay(800);
 
       let filteredData = [...transactions];
 
-      // 1. Filter by Date Range
       if (filters.startDate && filters.endDate) {
         filteredData = filteredData.filter((t) => {
-          // Parse dummy date "YYYY-MM-DD"
           const tDate = parseISO(t.date);
           return isWithinInterval(tDate, {
             start: startOfDay(filters.startDate),
@@ -31,7 +28,6 @@ export const useReports = ({ filters }) => {
         });
       }
 
-      // 2. Filter by Nominal (Min-Max)
       if (filters.minAmount) {
         filteredData = filteredData.filter(
           (t) => t.amount >= Number(filters.minAmount)
@@ -43,21 +39,17 @@ export const useReports = ({ filters }) => {
         );
       }
 
-      // 3. Filter by Status
       if (filters.status && filters.status !== "All") {
         filteredData = filteredData.filter((t) => t.status === filters.status);
       }
 
-      // --- Aggregations for Charts ---
-
-      // A. Trend (Line Chart) - Daily Total Amount
-      // Group by Date
       const trendMap = {};
       filteredData.forEach((t) => {
-        if (!trendMap[t.date]) trendMap[t.date] = 0;
-        trendMap[t.date] += t.amount;
+        const dateKey = t.date.split("T")[0];
+        if (!trendMap[dateKey]) trendMap[dateKey] = 0;
+        trendMap[dateKey] += t.amount;
       });
-      // Convert to array and sort
+
       const trendChartData = Object.keys(trendMap)
         .map((date) => ({
           date,
@@ -65,21 +57,23 @@ export const useReports = ({ filters }) => {
         }))
         .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-      // B. Status Distribution (Pie Chart)
       const statusMap = {};
       filteredData.forEach((t) => {
         if (!statusMap[t.status]) statusMap[t.status] = 0;
-        statusMap[t.status] += 1; // Count
+        statusMap[t.status] += 1;
       });
       const statusChartData = Object.keys(statusMap).map((status) => ({
         name: status,
         value: statusMap[status],
       }));
 
-      // C. Top Recipients (Bar Chart) - Only for "Keluar" type usually, or all
       const recipientMap = {};
       filteredData
-        .filter((t) => t.recipient !== "Transaksiku" && t.type === "Keluar")
+        .filter(
+          (t) =>
+            (t.type === "Transfer Keluar" || t.type === "Pembayaran") &&
+            t.recipient !== "Transaksiku"
+        )
         .forEach((t) => {
           if (!recipientMap[t.recipient]) recipientMap[t.recipient] = 0;
           recipientMap[t.recipient] += t.amount;
@@ -90,23 +84,67 @@ export const useReports = ({ filters }) => {
           amount: recipientMap[r],
         }))
         .sort((a, b) => b.amount - a.amount)
-        .slice(0, 5); // Top 5
+        .slice(0, 5);
 
-      // D. Radar Chart (Category Analysis)
-      // Compare average amount per category vs count or similar
-      const categoryMap = {};
-      filteredData.forEach((t) => {
-        if (!categoryMap[t.category])
-          categoryMap[t.category] = { count: 0, total: 0 };
-        categoryMap[t.category].count += 1;
-        categoryMap[t.category].total += t.amount;
+      const today = new Date();
+      const thirtyDaysAgo = subDays(today, 30);
+      const sixtyDaysAgo = subDays(today, 60);
+
+      const currentMonthCats = {};
+      const prevMonthCats = {};
+
+      transactions.forEach((t) => {
+        const tDate = parseISO(t.date);
+
+        if (
+          t.type === "Transfer Keluar" ||
+          t.type === "Pembayaran" ||
+          t.category !== "Lainnya"
+        ) {
+          if (isWithinInterval(tDate, { start: thirtyDaysAgo, end: today })) {
+            if (!currentMonthCats[t.category]) currentMonthCats[t.category] = 0;
+            currentMonthCats[t.category] += t.amount;
+          } else if (
+            isWithinInterval(tDate, { start: sixtyDaysAgo, end: thirtyDaysAgo })
+          ) {
+            if (!prevMonthCats[t.category]) prevMonthCats[t.category] = 0;
+            prevMonthCats[t.category] += t.amount;
+          }
+        }
       });
-      const radarChartData = Object.keys(categoryMap).map((cat) => ({
+
+      const allCategories = new Set([
+        ...Object.keys(currentMonthCats),
+        ...Object.keys(prevMonthCats),
+      ]);
+
+      const radarChartData = Array.from(allCategories).map((cat) => ({
         subject: cat,
-        A: categoryMap[cat].count, // Frequency
-        B: categoryMap[cat].total / 10000, // Scaled amount for visibility
-        fullMark: 100, // arbitrary
+        A: currentMonthCats[cat] || 0,
+        B: prevMonthCats[cat] || 0,
+        fullMark:
+          Math.max(
+            ...Object.values(currentMonthCats),
+            ...Object.values(prevMonthCats)
+          ) * 1.2,
       }));
+
+      let currentBalance = 10000000;
+      const sortedForBalance = [...filteredData].sort(
+        (a, b) => new Date(a.date) - new Date(b.date)
+      );
+
+      const balanceHistory = sortedForBalance.map((t) => {
+        if (t.type === "Transfer Masuk" || t.type === "Top Up") {
+          currentBalance += t.amount;
+        } else {
+          currentBalance -= t.amount;
+        }
+        return {
+          date: t.date,
+          balance: currentBalance,
+        };
+      });
 
       return {
         transactions: filteredData,
@@ -115,10 +153,11 @@ export const useReports = ({ filters }) => {
           status: statusChartData,
           recipients: recipientChartData,
           radar: radarChartData,
+          balance: balanceHistory,
         },
       };
     },
-    keepPreviousData: true, // Should be placeholderData in v5, I will use placeholderData pattern
+    keepPreviousData: true,
     placeholderData: (prev) => prev,
   });
 };

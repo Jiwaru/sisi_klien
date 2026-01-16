@@ -20,36 +20,32 @@ import {
 import AccountFormModal from "./Components/AccountFormModal";
 import Button from "@/Pages/Layouts/Components/Button";
 import Input from "@/Pages/Layouts/Components/Input";
+import Table from "@/Pages/Layouts/Components/Table";
 import Swal from "sweetalert2";
 import { toastSuccess, toastError } from "@/Utils/Helpers/ToastHelpers";
 
+import { useDebounce } from "@/Utils/Hooks/useDebounce";
+
 const AccountsPage = () => {
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState(""); // Immediate state
-  const [debouncedSearch, setDebouncedSearch] = useState(""); // Debounced state for query
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 500);
+
   const [selectedIds, setSelectedIds] = useState([]);
 
-  // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingAccount, setEditingAccount] = useState(null);
 
-  // Queries & Mutations
   const { data, isLoading } = useAccounts({ page, search: debouncedSearch });
   const createMutation = useCreateAccount();
   const updateMutation = useUpdateAccount();
   const deleteMutation = useDeleteAccount();
   const bulkDeleteMutation = useBulkDeleteAccounts();
 
-  // Debounce Search
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(search);
-      setPage(1); // Reset to page 1 on search
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [search]);
+    setPage(1);
+  }, [debouncedSearch]);
 
-  // Handlers
   const handleSelectAll = () => {
     if (selectedIds.length === data?.data.length) {
       setSelectedIds([]);
@@ -133,7 +129,7 @@ const AccountsPage = () => {
 
   return (
     <div className="animate-in fade-in duration-500">
-      {/* Header */}
+      {}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
           <h2 className="text-3xl font-bold text-gray-800 tracking-tight">
@@ -162,7 +158,7 @@ const AccountsPage = () => {
         </div>
       </div>
 
-      {/* Toolbar */}
+      {}
       <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 mb-6">
         <div className="relative flex-1">
           <Search
@@ -178,162 +174,130 @@ const AccountsPage = () => {
         </div>
       </div>
 
-      {/* Table Content */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        {isLoading ? (
-          <div className="p-12 flex justify-center items-center text-indigo-500">
-            <Loader2 className="w-8 h-8 animate-spin" />
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead className="bg-gray-50 border-b border-gray-100">
-                <tr>
-                  <th className="px-6 py-4 w-[50px]">
-                    <button
-                      onClick={handleSelectAll}
-                      className="text-gray-400 hover:text-indigo-600"
-                    >
-                      {data?.data.length > 0 &&
-                      selectedIds.length === data?.data.length ? (
-                        <CheckSquare size={20} />
-                      ) : (
-                        <Square size={20} />
-                      )}
-                    </button>
-                  </th>
-                  <th className="px-6 py-4 text-sm font-semibold text-gray-600">
-                    Nama Pemilik
-                  </th>
-                  <th className="px-6 py-4 text-sm font-semibold text-gray-600">
-                    Bank
-                  </th>
-                  <th className="px-6 py-4 text-sm font-semibold text-gray-600">
-                    No. Rekening
-                  </th>
-                  <th className="px-6 py-4 text-sm font-semibold text-gray-600 text-right">
-                    Aksi
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {data?.data.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan="5"
-                      className="px-6 py-12 text-center text-gray-400"
-                    >
-                      Tidak ada data rekening ditemukan.
-                    </td>
-                  </tr>
-                ) : (
-                  data?.data.map((account) => (
-                    <tr
-                      key={account.id}
-                      className="hover:bg-gray-50/80 transition-colors group"
-                    >
-                      <td className="px-6 py-4">
-                        <button
-                          onClick={() => handleSelectOne(account.id)}
-                          className={`text-gray-400 hover:text-indigo-600 ${
-                            selectedIds.includes(account.id)
-                              ? "text-indigo-600"
-                              : ""
-                          }`}
-                        >
-                          {selectedIds.includes(account.id) ? (
-                            <CheckSquare size={20} />
-                          ) : (
-                            <Square size={20} />
-                          )}
-                        </button>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <img
-                            src={account.avatar}
-                            alt={account.name}
-                            className="w-10 h-10 rounded-full"
-                          />
-                          <div>
-                            <p className="font-semibold text-gray-900">
-                              {account.name}
-                            </p>
-                            {account.favorite && (
-                              <span className="text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-medium">
-                                Favorit
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-lg text-sm font-medium">
-                          {account.bank}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 font-mono text-gray-600">
-                        {account.accountNumber}
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button
-                            size="sm"
-                            variant="secondary"
-                            onClick={() => {
-                              setEditingAccount(account);
-                              setIsModalOpen(true);
-                            }}
-                          >
-                            <Edit2 size={16} />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="danger"
-                            onClick={() => handleDelete(account.id)}
-                          >
-                            <Trash2 size={16} />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        )}
+      {}
+      <Table>
+        <Table.Header>
+          <Table.HeadCell className="w-[50px]">
+            <button
+              onClick={handleSelectAll}
+              className="text-gray-400 hover:text-indigo-600"
+            >
+              {data?.data.length > 0 &&
+              selectedIds.length === data?.data.length ? (
+                <CheckSquare size={20} />
+              ) : (
+                <Square size={20} />
+              )}
+            </button>
+          </Table.HeadCell>
+          <Table.HeadCell>Nama Pemilik</Table.HeadCell>
+          <Table.HeadCell>Bank</Table.HeadCell>
+          <Table.HeadCell>No. Rekening</Table.HeadCell>
+          <Table.HeadCell className="text-right">Aksi</Table.HeadCell>
+        </Table.Header>
+        <Table.Body
+          isLoading={isLoading}
+          isEmpty={data?.data.length === 0}
+          emptyMessage="Tidak ada data rekening ditemukan."
+        >
+          {data?.data.map((account) => (
+            <Table.Row key={account.id}>
+              <Table.Cell>
+                <button
+                  onClick={() => handleSelectOne(account.id)}
+                  className={`text-gray-400 hover:text-indigo-600 ${
+                    selectedIds.includes(account.id) ? "text-indigo-600" : ""
+                  }`}
+                >
+                  {selectedIds.includes(account.id) ? (
+                    <CheckSquare size={20} />
+                  ) : (
+                    <Square size={20} />
+                  )}
+                </button>
+              </Table.Cell>
+              <Table.Cell>
+                <div className="flex items-center gap-3">
+                  <img
+                    src={account.avatar}
+                    alt={account.name}
+                    className="w-10 h-10 rounded-full"
+                  />
+                  <div>
+                    <p className="font-semibold text-gray-900">
+                      {account.name}
+                    </p>
+                    {account.favorite && (
+                      <span className="text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-medium">
+                        Favorit
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </Table.Cell>
+              <Table.Cell>
+                <span className="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-lg text-sm font-medium">
+                  {account.bank}
+                </span>
+              </Table.Cell>
+              <Table.Cell className="font-mono text-gray-600">
+                {account.accountNumber}
+              </Table.Cell>
+              <Table.Cell className="text-right">
+                <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => {
+                      setEditingAccount(account);
+                      setIsModalOpen(true);
+                    }}
+                  >
+                    <Edit2 size={16} />
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="danger"
+                    onClick={() => handleDelete(account.id)}
+                  >
+                    <Trash2 size={16} />
+                  </Button>
+                </div>
+              </Table.Cell>
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table>
 
-        {/* Pagination */}
-        {data?.meta && data.meta.totalPages > 1 && (
-          <div className="px-6 py-4 border-t border-gray-100 flex justify-between items-center">
-            <span className="text-sm text-gray-500">
-              Hal <span className="font-medium">{page}</span> dari{" "}
-              {data.meta.totalPages}
-            </span>
-            <div className="flex gap-2">
-              <Button
-                size="sm"
-                variant="secondary"
-                disabled={page === 1}
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-              >
-                <ChevronLeft size={16} />
-              </Button>
-              <Button
-                size="sm"
-                variant="secondary"
-                disabled={page === data.meta.totalPages}
-                onClick={() =>
-                  setPage((p) => Math.min(data.meta.totalPages, p + 1))
-                }
-              >
-                <ChevronRight size={16} />
-              </Button>
-            </div>
+      {}
+      {data?.meta && data.meta.totalPages > 1 && (
+        <div className="px-6 py-4 border-t border-gray-100 flex justify-between items-center">
+          <span className="text-sm text-gray-500">
+            Hal <span className="font-medium">{page}</span> dari{" "}
+            {data.meta.totalPages}
+          </span>
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              variant="secondary"
+              disabled={page === 1}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+            >
+              <ChevronLeft size={16} />
+            </Button>
+            <Button
+              size="sm"
+              variant="secondary"
+              disabled={page === data.meta.totalPages}
+              onClick={() =>
+                setPage((p) => Math.min(data.meta.totalPages, p + 1))
+              }
+            >
+              <ChevronRight size={16} />
+            </Button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       <AccountFormModal
         isOpen={isModalOpen}
